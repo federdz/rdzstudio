@@ -47,32 +47,35 @@ export default function Dashboard({ onLogout }) {
                     </button>
                 </nav>
 
+                <button
+                    onClick={saveToStorage}
+                    style={{
+                        background: '#00FFFF',
+                        color: 'black',
+                        border: 'none',
+                        padding: '1rem',
+                        borderRadius: '6px',
+                        fontWeight: 'bold',
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.5rem',
+                        width: '100%',
+                        marginBottom: '1rem',
+                        marginTop: 'auto'
+                    }}
+                >
+                    <Save size={18} /> GUARDAR CAMBIOS
+                </button>
+
                 <button className={styles.logoutBtn} onClick={onLogout}>
                     <LogOut size={16} /> Logout
                 </button>
             </aside>
 
             <main className={styles.main}>
-                {/* GLOBAL HEADER WITH SAVE BUTTON */}
-                <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '2rem' }}>
-                    <button
-                        onClick={saveToStorage}
-                        style={{
-                            background: '#00FFFF',
-                            color: 'black',
-                            border: 'none',
-                            padding: '0.8rem 2rem',
-                            borderRadius: '6px',
-                            fontWeight: 'bold',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '0.5rem'
-                        }}
-                    >
-                        <Save size={18} /> GUARDAR CAMBIOS
-                    </button>
-                </div>
+                {/* GLOBAL HEADER REMOVED - MOVED TO SIDEBAR */}
 
                 {activeTab === 'projects' && <TabProjects />}
                 {activeTab === 'content' && <TabContent />}

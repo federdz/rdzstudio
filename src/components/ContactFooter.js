@@ -53,14 +53,14 @@ export default function ContactFooter() {
                         <h2 className={styles.headerLine2}>trabajemos juntos</h2>
                     </div>
 
-                    <a href="mailto:hello@rdzstudio.com" className={styles.email}>
-                        hello@rdzstudio.com
+                    <a href="mailto:federicorodriguezlarocca@gmail.com" className={styles.email}>
+                        federicorodriguezlarocca@gmail.com
                     </a>
 
                     <div className={styles.socials}>
-                        <a href="#" className={styles.icon} aria-label="Instagram"><Instagram strokeWidth={1.5} /></a>
-                        <a href="#" className={styles.icon} aria-label="LinkedIn"><Linkedin strokeWidth={1.5} /></a>
-                        <a href="#" className={styles.icon} aria-label="Behance"><BehanceIcon /></a>
+                        <a href="https://www.instagram.com/rdzstudio_/" className={styles.icon} aria-label="Instagram"><Instagram strokeWidth={1.5} /></a>
+                        <a href="https://www.linkedin.com/in/federicorodr%C3%ADguezlarocca/" className={styles.icon} aria-label="LinkedIn"><Linkedin strokeWidth={1.5} /></a>
+                        <a href="https://www.behance.net/federicorodriguez" className={styles.icon} aria-label="Behance"><BehanceIcon /></a>
                     </div>
                 </div>
 

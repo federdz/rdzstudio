@@ -37,7 +37,7 @@ export default function ProjectsSection({ activeFilter = 'Todos', onFilterChange
         <section className={styles.projects} id="works">
             <div className={styles.container}>
                 <div className={styles.header}>
-                    <h3 className={styles.title}>Works</h3>
+                    <h3 className={styles.title}>Proyectos</h3>
 
                     <div className={styles.filters}>
                         {categories.map(cat => (

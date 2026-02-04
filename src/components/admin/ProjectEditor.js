@@ -15,6 +15,7 @@ export default function ProjectEditor({ project, onCancel, onSave }) {
         credits: project?.credits || '', // Collaborators
         cover: project?.cover || '',
         description: project?.description || '', // Intro text (Challenge)
+        tools: project?.tools ? project.tools.join(', ') : '',
         blockSpacing: project?.blockSpacing || 20, // Global spacing for blocks
         contentBlocks: project?.contentBlocks || []
     });
@@ -45,7 +46,8 @@ export default function ProjectEditor({ project, onCancel, onSave }) {
             id: Date.now(),
             type,
             // Grid uses array of URLs, others use string
-            content: type === 'grid' ? [] : ''
+            content: type === 'grid' ? [] : '',
+            spacing: type === 'grid' ? 10 : undefined
         };
         setFormData(prev => ({
             ...prev,
@@ -57,6 +59,13 @@ export default function ProjectEditor({ project, onCancel, onSave }) {
         setFormData(prev => ({
             ...prev,
             contentBlocks: prev.contentBlocks.map(b => b.id === id ? { ...b, content: newContent } : b)
+        }));
+    };
+
+    const updateBlockField = (id, field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            contentBlocks: prev.contentBlocks.map(b => b.id === id ? { ...b, [field]: value } : b)
         }));
     };
 
@@ -104,7 +113,11 @@ export default function ProjectEditor({ project, onCancel, onSave }) {
 
     const handleFormSubmit = (e) => {
         e.preventDefault();
-        onSave(formData);
+        const submissionData = {
+            ...formData,
+            tools: formData.tools.split(',').map(t => t.trim()).filter(Boolean)
+        };
+        onSave(submissionData);
     };
 
     return (
@@ -138,7 +151,7 @@ export default function ProjectEditor({ project, onCancel, onSave }) {
                     <input className={styles.input} name="title" value={formData.title} onChange={handleChange} required />
                 </div>
 
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '1rem' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr', gap: '1rem' }}>
                     <div className={styles.field}>
                         <label className={styles.label}>Category</label>
                         <select className={styles.input} name="category" value={formData.category} onChange={handleChange}>
@@ -154,6 +167,10 @@ export default function ProjectEditor({ project, onCancel, onSave }) {
                     <div className={styles.field}>
                         <label className={styles.label}>Year</label>
                         <input className={styles.input} name="year" value={formData.year} onChange={handleChange} placeholder="2024" />
+                    </div>
+                    <div className={styles.field}>
+                        <label className={styles.label}>Tools</label>
+                        <input className={styles.input} name="tools" value={formData.tools} onChange={handleChange} placeholder="Photoshop, Illustrator..." />
                     </div>
                 </div>
 
@@ -281,22 +298,36 @@ export default function ProjectEditor({ project, onCancel, onSave }) {
                                 {/* GRID BLOCK */}
                                 {block.type === 'grid' && (
                                     <div>
-                                        <div className={styles.dropzone} onClick={() => document.getElementById(`upload-grid-${block.id}`).click()}>
-                                            <input
-                                                id={`upload-grid-${block.id}`}
-                                                type="file"
-                                                accept="image/*"
-                                                multiple
-                                                hidden
-                                                onChange={(e) => handleGridUpload(e, block.id, block.content)}
-                                            />
-                                            <GridIcon size={24} />
-                                            <span>Click to Add Images to Grid</span>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '10px' }}>
+                                            <div className={styles.dropzone} onClick={() => document.getElementById(`upload-grid-${block.id}`).click()} style={{ flex: 1 }}>
+                                                <input
+                                                    id={`upload-grid-${block.id}`}
+                                                    type="file"
+                                                    accept="image/*"
+                                                    multiple
+                                                    hidden
+                                                    onChange={(e) => handleGridUpload(e, block.id, block.content)}
+                                                />
+                                                <GridIcon size={24} />
+                                                <span>Click to Add Images</span>
+                                            </div>
+                                            <div style={{ marginLeft: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.8rem', color: '#888' }}>
+                                                <label>Gap:</label>
+                                                <input
+                                                    type="range"
+                                                    min="0"
+                                                    max="50"
+                                                    value={block.spacing || 10}
+                                                    onChange={(e) => updateBlockField(block.id, 'spacing', Number(e.target.value))}
+                                                    style={{ width: '60px' }}
+                                                />
+                                                <span>{block.spacing || 10}px</span>
+                                            </div>
                                         </div>
 
                                         {/* Grid Render */}
                                         {block.content && block.content.length > 0 && (
-                                            <div style={{ display: 'flex', width: '100%', gap: '10px', marginTop: '10px' }}>
+                                            <div style={{ display: 'flex', width: '100%', gap: `${parseInt(block.spacing) || 0}px`, marginTop: '10px', flexWrap: 'wrap' }}>
                                                 {block.content.map((url, idx) => (
                                                     <div key={idx} style={{ position: 'relative', flex: 1 }}>
                                                         <img src={url} alt={`Grid ${idx}`} style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '4px' }} />

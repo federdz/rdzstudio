@@ -20,7 +20,7 @@ export default function Header() {
             <div className={styles.logo}>
                 <Link href="/">
                     {logoUrl ? (
-                        <img src={logoUrl} alt="Logo" style={{ height: '40px', width: 'auto', objectFit: 'contain' }} key={logoUrl} />
+                        <img src={logoUrl} alt="Logo" style={{ height: '80px', width: 'auto', objectFit: 'contain' }} key={logoUrl} />
                     ) : (
                         <div className={styles.logoPlaceholder}></div>
                     )}
@@ -32,10 +32,10 @@ export default function Header() {
             </button>
 
             <nav className={`${styles.nav} ${isMenuOpen ? styles.open : ''}`}>
-                <Link href="/" onClick={() => setIsMenuOpen(false)}>Home</Link>
-                <Link href="#works" onClick={() => setIsMenuOpen(false)}>Works</Link>
-                <Link href="#about" onClick={() => setIsMenuOpen(false)}>About</Link>
-                <Link href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+                <Link href="/" onClick={() => setIsMenuOpen(false)}>Inicio</Link>
+                <Link href="#works" onClick={() => setIsMenuOpen(false)}>Proyectos</Link>
+                <Link href="#about" onClick={() => setIsMenuOpen(false)}>Sobre mí</Link>
+                <Link href="#contact" onClick={() => setIsMenuOpen(false)}>Contacto</Link>
             </nav>
         </header>
     );

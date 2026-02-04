@@ -83,6 +83,44 @@ export default function ProjectPage({ params }) {
                 </div>
             </section>
 
+            {/* CONTENT BLOCKS (Visual Journey) */}
+            {project.contentBlocks && project.contentBlocks.length > 0 && (
+                <section className={styles.contentBlocksSection} style={{ marginBottom: '4rem' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: `${project.blockSpacing || 20}px` }}>
+                        {project.contentBlocks.map(block => (
+                            <div key={block.id}>
+                                {block.type === 'text' && (
+                                    <div className={styles.container} style={{ maxWidth: '800px', margin: '0 auto', padding: '0 1rem' }}>
+                                        <p style={{ whiteSpace: 'pre-wrap', lineHeight: '1.6', fontSize: '1.1rem', color: '#ccc' }}>{block.content}</p>
+                                    </div>
+                                )}
+
+                                {block.type === 'image' && (
+                                    <img src={block.content} alt="Project Media" style={{ width: '100%', height: 'auto', display: 'block' }} />
+                                )}
+
+                                {block.type === 'video' && (
+                                    <video src={block.content} controls style={{ width: '100%', height: 'auto', display: 'block' }} />
+                                )}
+
+                                {block.type === 'grid' && Array.isArray(block.content) && (
+                                    <div style={{ display: 'flex', width: '100%', gap: `${parseInt(block.spacing) || 0}px`, flexWrap: 'wrap' }}>
+                                        {block.content.map((url, i) => (
+                                            <div key={i} style={{ flex: 1, minWidth: '300px' }}>
+                                                <img src={url} alt={`Grid ${i}`} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                </section>
+            )}
+
+            {/* INFO BAR */}
+            {/* INFO BAR REMOVED FROM HERE - MOVED UP */}
+
             {/* DESCRIPTION */}
             <section className={styles.descriptionSection}>
                 <div className={styles.sideTitle}>
@@ -90,38 +128,6 @@ export default function ProjectPage({ params }) {
                 </div>
                 <div className={styles.mainText}>
                     <p>{project.description}</p>
-
-                    {/* Dynamic Blocks Rendering (Mixed with description or separate) */}
-                    {/* If using contentBlocks, we rendered them here. For now we use the description field + static text below it as per previous design, 
-              but ideally we loop contentBlocks here if user added them. Let's support Blocks if present. */}
-
-                    {project.contentBlocks && project.contentBlocks.length > 0 && (
-                        <div style={{ marginTop: '3rem', display: 'flex', flexDirection: 'column', gap: `${project.blockSpacing || 20}px` }}>
-                            {project.contentBlocks.map(block => (
-                                <div key={block.id}>
-                                    {block.type === 'text' && <p style={{ whiteSpace: 'pre-wrap' }}>{block.content}</p>}
-
-                                    {block.type === 'image' && (
-                                        <img src={block.content} alt="Project Media" style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }} />
-                                    )}
-
-                                    {block.type === 'video' && (
-                                        <video src={block.content} controls style={{ width: '100%', height: 'auto', display: 'block', borderRadius: '4px' }} />
-                                    )}
-
-                                    {block.type === 'grid' && Array.isArray(block.content) && (
-                                        <div style={{ display: 'flex', width: '100%', gap: '10px' }}>
-                                            {block.content.map((url, i) => (
-                                                <div key={i} style={{ flex: 1 }}>
-                                                    <img src={url} alt={`Grid ${i}`} style={{ width: '100%', height: '100%', borderRadius: '4px', objectFit: 'cover' }} />
-                                                </div>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-                            ))}
-                        </div>
-                    )}
                 </div>
             </section>
 
