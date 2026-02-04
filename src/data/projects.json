@@ -1,0 +1,257 @@
+[
+  {
+    "title": "sa",
+    "category": "Audiovisual",
+    "cover": "asdasd",
+    "description": "asdasd",
+    "tools": [],
+    "credits": "asasd",
+    "media": [],
+    "id": "1770156407530"
+  },
+  {
+    "id": "1",
+    "title": "Neon Dreams",
+    "category": "Audiovisual",
+    "cover": "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?q=80&w=1000&auto=format&fit=crop",
+    "description": "A cyberpunk inspired visual journey through the streets of Tokyo. This project explores the relationship between synthetic light and organic motion, capturing the heartbeat of a sleepless city. We utilized advanced motion capture techniques blended with procedural generation to create a seamless visual experience.",
+    "tools": [
+      "After Effects",
+      "Cinema 4D",
+      "Octane"
+    ],
+    "credits": "Music by Synthwave Boy",
+    "client": "Future Records",
+    "year": "2024",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1515630278258-407f66498911",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1563089145-599997674d42",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1504639725590-34d0984388bd",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1496449903678-6806db98712d",
+        "format": "horizontal"
+      }
+    ]
+  },
+  {
+    "id": "2",
+    "title": "Eco Brand",
+    "category": "Identidad Visual",
+    "cover": "https://images.unsplash.com/photo-1600607686527-6fb886090705?q=80&w=1000&auto=format&fit=crop",
+    "description": "Rebranding for a sustainable tech company. The goal was to merge nature with technology in a way that feels organic yet precise. The color palette draws from deep forest greens and clean sky blues, grounded by earthy neutrals.",
+    "tools": [
+      "Illustrator",
+      "Photoshop"
+    ],
+    "credits": "Art Direction: Federico R.",
+    "client": "GreenTech Inc.",
+    "year": "2023",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1600607686527-6fb886090705",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1542601906990-b4d3fb7d5b73",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1518531933037-91b2f5f229cc",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1441974231531-c6227db76b6e",
+        "format": "horizontal"
+      }
+    ]
+  },
+  {
+    "id": "3",
+    "title": "Social Campaign",
+    "category": "Social Media",
+    "cover": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?q=80&w=1000&auto=format&fit=crop",
+    "description": "Instagram and TikTok campaign for viral growth. Focused on high-energy transitions and bold typography to capture attention in the first 3 seconds.",
+    "tools": [
+      "Figma",
+      "Premiere Pro"
+    ],
+    "credits": "Agency: TopTier",
+    "client": "Viral Co.",
+    "year": "2024",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1611162617474-5b21e879e113",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1611262588024-d12430b98920",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1611162616475-46b635cb6868",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1432888498266-38ffec3eaf0a",
+        "format": "horizontal"
+      }
+    ]
+  },
+  {
+    "id": "4",
+    "title": "Future Tech",
+    "category": "Identidad Visual",
+    "cover": "https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1000&auto=format&fit=crop",
+    "description": "Visual identity for a futuristic AI company. Developing a language of circuitry and neural networks visualized through clean geometric shapes.",
+    "tools": [
+      "Illustrator",
+      "Blender"
+    ],
+    "credits": "Client: AI Corp",
+    "client": "AI Corp",
+    "year": "2025",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1518770660439-4636190af475",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1531297461136-82lw9z1w9p10",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1485827404703-89b55fcc595e",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b",
+        "format": "horizontal"
+      }
+    ]
+  },
+  {
+    "id": "5",
+    "title": "Urban Flow",
+    "category": "Audiovisual",
+    "cover": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1000&auto=format&fit=crop",
+    "description": "Motion graphics piece exploring urban rhythms. A study in timing, ease, and kinetic typography set to a lofi beat.",
+    "tools": [
+      "After Effects"
+    ],
+    "credits": "Music: Lofi Beats",
+    "client": "Self",
+    "year": "2023",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1492684223066-81342ee5ff30",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1480796927426-f609979314bd",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1514565131-fce0801e5785",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1449824913929-2b3a6e547361",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df",
+        "format": "horizontal"
+      }
+    ]
+  },
+  {
+    "id": "6",
+    "title": "Minimalist UI",
+    "category": "Social Media",
+    "cover": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?q=80&w=1000&auto=format&fit=crop",
+    "description": "Clean and minimal social media kit. Focusing on whitespace, elegance, and readability.",
+    "tools": [
+      "Figma"
+    ],
+    "credits": "Self-initiated",
+    "client": "UI Kit",
+    "year": "2024",
+    "media": [
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1499951360447-b19be8fe80f5",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1581291518633-83b4ebd1d83e",
+        "format": "vertical"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1434626881859-194d67b2b86f",
+        "format": "horizontal"
+      },
+      {
+        "type": "image",
+        "url": "https://images.unsplash.com/photo-1493612276216-9c5907c6c1cb",
+        "format": "horizontal"
+      }
+    ]
+  }
+]
