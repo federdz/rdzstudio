@@ -1,115 +1,114 @@
 .hero {
-    min-height: 100vh;
+    position: relative;
+    height: 100vh;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    text-align: center;
-    padding: 6rem 2rem;
-    position: relative;
-    z-index: 10;
-    background-color: transparent !important;
-    width: 100%;
+    overflow: hidden;
+    background: transparent;
+    /* Importante para ver el video */
 }
 
-.content {
-    max-width: 900px;
+/* CONTENEDOR DEL VIDEO */
+.videoContainer {
+    position: fixed;
+    /* CAMBIO CLAVE: FIJO A LA PANTALLA */
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+    /* Detrás de todo el sitio */
+    overflow: hidden;
+}
+
+/* EL VIDEO EN SÍ */
+.videoBackground {
     width: 100%;
-    margin: 0 auto;
+    height: 100%;
+    object-fit: cover;
+    pointer-events: none;
+    /* Nadie puede tocar play/pausa */
+}
+
+/* CONTENIDO */
+.content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 0 20px;
+    max-width: 800px;
 }
 
 .name {
-    font-family: 'Outfit', 'Montserrat', sans-serif;
-    font-size: 0.9rem;
+    font-size: 1.2rem;
     font-weight: 300;
-    color: white;
-    margin-bottom: 0.5rem;
     letter-spacing: 2px;
-    opacity: 0.9;
+    margin-bottom: 10px;
+    color: #ccc;
+    text-transform: uppercase;
 }
 
 .title {
-    font-family: 'Trap', 'Outfit', 'Montserrat', sans-serif;
-    font-size: 5rem;
-    line-height: 0.9;
-    font-weight: 700;
-    margin-bottom: 0.5rem;
-    display: flex;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    justify-content: center;
+    font-size: 4rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin: 0 0 15px 0;
+    text-transform: uppercase;
 }
 
 .brandName {
-    color: #00f5d4;
+    color: #00FFFF;
 }
 
 .studioName {
-    color: white;
+    color: #ffffff;
 }
 
 .subtitle {
-    font-family: 'Outfit', 'Montserrat', sans-serif;
-    font-size: 1rem;
-    text-transform: uppercase;
+    font-size: 1.5rem;
+    font-weight: 600;
     letter-spacing: 4px;
-    margin-bottom: 0;
-    color: white;
-    font-weight: 400;
-    opacity: 0.9;
+    margin-bottom: 30px;
+    color: #eee;
 }
 
-/* --- AQUÍ ESTÁ LA CORRECCIÓN DE LA CAJA --- */
 .valuePropBox {
-    background: rgba(255, 255, 255, 0.03);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-
-    padding: 0.8rem 1.2rem;
-    border-radius: 12px;
-
-    /* CAMBIOS PARA QUE CREZCA CON EL TEXTO: */
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(5px);
+    padding: 15px 25px;
+    border-radius: 8px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
     display: inline-block;
-    /* Ocupa solo el espacio del texto */
-    vertical-align: middle;
-
-    max-width: 600px;
-    /* Límite máximo */
-    min-width: 40px;
-    /* Para que no desaparezca al borrar todo */
-    min-height: 50px;
-    /* Altura fija para evitar saltos verticales */
-
-    margin-top: 2rem;
-    margin-bottom: 3rem;
-    /* Al ser inline-block, se centra solo con el text-align: center del padre (.hero) */
+    margin-bottom: 40px;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .valuePropBox p {
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 400;
-    display: inline;
-    /* Importante para fluidez */
     margin: 0;
+    font-size: 1.1rem;
+    color: #fff;
+    font-weight: 400;
 }
 
 .cursor {
     display: inline-block;
     width: 2px;
     height: 1.2em;
-    background-color: var(--color-accent, #00f5d4);
-    /* Fallback a cyan si falta la variable */
-    margin-left: 4px;
-    vertical-align: text-bottom;
+    background-color: #00FFFF;
+    margin-left: 5px;
     animation: blink 1s step-end infinite;
+    vertical-align: middle;
 }
 
 @keyframes blink {
 
-    0%,
-    100% {
+    from,
+    to {
         opacity: 1;
     }
 
@@ -120,75 +119,73 @@
 
 .ctaGroup {
     display: flex;
-    gap: 1rem;
+    gap: 20px;
     justify-content: center;
 }
 
-.primaryBtn {
-    background: var(--color-accent, #00f5d4);
-    color: #0b0f19;
-    padding: 0.8rem 2rem;
-    border-radius: 50px;
+.primaryBtn,
+.secondaryBtn {
+    padding: 15px 40px;
+    border-radius: 30px;
     font-weight: 700;
     text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 0.05em;
-    transition: all 0.2s;
+    letter-spacing: 1px;
     text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.primaryBtn {
+    background-color: #00FFFF;
+    color: #000;
+    border: 2px solid #00FFFF;
+    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
 }
 
 .primaryBtn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.3);
+    background-color: transparent;
+    color: #00FFFF;
+    box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
 }
 
 .secondaryBtn {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: white;
-    padding: 0.8rem 2rem;
-    border-radius: 50px;
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 0.9rem;
-    letter-spacing: 0.05em;
-    transition: all 0.2s;
-    text-decoration: none;
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #fff;
 }
 
 .secondaryBtn:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: white;
+    background-color: #fff;
+    color: #000;
 }
 
+/* RESPONSIVE */
 @media (max-width: 768px) {
-    .hero {
-        padding: 6rem 1.5rem;
+    .name {
+        font-size: 1rem;
     }
 
     .title {
-        font-size: 3.5rem;
+        font-size: 3rem;
     }
-}
 
-/* CLASE CRÍTICA PARA EL VIDEO */
-.videoBackground {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 0;
+    .subtitle {
+        font-size: 1.2rem;
+        letter-spacing: 3px;
+    }
 
-    /* AGREGAR ESTO: Evita que el usuario interactúe con el video (play/pausa) */
-    pointer-events: none;
-}
+    .valuePropBox p {
+        font-size: 1rem;
+    }
 
-.content {
-    position: relative;
-    z-index: 2;
-    text-align: center;
-    padding: 0 20px;
+    .ctaGroup {
+        flexDirection: column;
+        gap: 15px;
+    }
+
+    .primaryBtn,
+    .secondaryBtn {
+        width: 100%;
+        text-align: center;
+        padding: 12px 0;
+    }
 }

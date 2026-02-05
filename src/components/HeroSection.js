@@ -1,39 +1,10 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './HeroSection.module.css';
 
 export default function HeroSection() {
-    // REFERENCIA AL VIDEO (Para forzarlo vía código)
-    const videoRef = useRef(null);
-
-    useEffect(() => {
-        const videoElement = videoRef.current;
-        if (videoElement) {
-            // TRUCO PARA SAFARI IPHONE:
-            // Forzamos el silencio de 3 maneras distintas para asegurarnos.
-            videoElement.muted = true;
-            videoElement.defaultMuted = true;
-            videoElement.setAttribute('muted', ''); // Forzamos el atributo HTML
-            videoElement.playsInline = true;
-
-            // Intentamos reproducir
-            const playPromise = videoElement.play();
-            if (playPromise !== undefined) {
-                playPromise.then(_ => {
-                    // Reproducción automática comenzó correctamente
-                })
-                    .catch(error => {
-                        console.log("Autoplay prevenido por el navegador. Intentando forzar mute nuevamente.", error);
-                        // Último intento: asegurar mute y volver a dar play
-                        videoElement.muted = true;
-                        videoElement.play();
-                    });
-            }
-        }
-    }, []);
-
-    // --- LÓGICA DE TEXTO TYPEWRITER (Sin cambios) ---
+    // --- LÓGICA DE TEXTO TYPEWRITER (Intacta) ---
     const phrases = [
         "Especialista en Identidad Visual, Social Media y Video.",
         "Potenciate a través del arte digital."
@@ -70,27 +41,32 @@ export default function HeroSection() {
         const timer = setTimeout(handleType, typingSpeed);
         return () => clearTimeout(timer);
     }, [text, isDeleting, loopNum, typingSpeed, phrases]);
-    // ----------------------------------
 
     return (
         <section className={styles.hero} id="home">
 
-            {/* VIDEO LOCAL BLINDADO PARA IPHONE */}
-            <video
-                ref={videoRef}
-                autoPlay
-                loop
-                muted
-                playsInline
-                webkit-playsinline="true"
-                preload="auto"
-                className={styles.videoBackground}
-            >
-                {/* Asegurate que este archivo exista en la carpeta 'public' */}
-                <source src="/video-hero.mp4" type="video/mp4" />
-            </video>
-
-            {/* SE ELIMINÓ EL DIV OVERLAY AQUÍ */}
+            {/* SOLUCIÓN DEFINITIVA PARA MÓVIL Y FONDO COMPARTIDO:
+               1. Usamos dangerouslySetInnerHTML para forzar los atributos HTML sin que React interfiera.
+               2. El CSS se encarga de dejarlo fijo (fixed) al fondo.
+            */}
+            <div
+                className={styles.videoContainer}
+                dangerouslySetInnerHTML={{
+                    __html: `
+                        <video 
+                            autoplay 
+                            loop 
+                            muted 
+                            playsinline 
+                            webkit-playsinline 
+                            poster="/video-poster.jpg"
+                            class="${styles.videoBackground}"
+                        >
+                            <source src="/video-hero.mp4" type="video/mp4" />
+                        </video>
+                    `
+                }}
+            />
 
             <div className={styles.content}>
                 <h2 className={styles.name}>Federico Rodríguez Larocca</h2>
