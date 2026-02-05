@@ -11,59 +11,52 @@
 /* --- CONTENEDOR FIJO DEL FONDO --- */
 .backgroundContainer {
     position: fixed;
-    /* Se queda pegado a la pantalla */
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     z-index: -1;
-    /* Al fondo */
     overflow: hidden;
 }
 
-/* ESTILOS VIDEO PC */
 .pcVideo {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: block;
-    /* Visible por defecto */
 }
 
-/* ESTILOS IMAGEN MOVIL */
 .mobileImage {
     width: 100%;
     height: 100%;
     object-fit: cover;
     display: none;
-    /* Oculta por defecto (se activa en móvil) */
 }
 
+/* OVERLAY TRANSPARENTE (Corregido) */
 .overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    /* Un tinte suave para leer mejor */
+    background: transparent;
+    /* Se quitó la oscuridad */
 }
 
-/* --- MEDIA QUERY: Lógica para Celulares/Tablets --- */
+/* --- MEDIA QUERY MÓVIL --- */
 @media (max-width: 768px) {
     .pcVideo {
         display: none;
-        /* OCULTA EL VIDEO EN MÓVIL */
     }
 
     .mobileImage {
         display: block;
-        /* MUESTRA LA IMAGEN EN MÓVIL */
     }
 }
 
 
-/* --- ESTILOS DE CONTENIDO (Iguales que siempre) --- */
+/* --- CONTENIDO --- */
 .content {
     position: relative;
     z-index: 2;
@@ -72,21 +65,31 @@
     max-width: 800px;
 }
 
+/* TIPOGRAFÍA Y TAMAÑOS (Corregido) */
+/* Asumimos que la fuente 'Trap' ya está importada globalmente */
+
 .name {
-    font-size: 1.2rem;
+    font-family: 'Trap', sans-serif;
+    /* Fuente Trap */
+    font-size: 1rem;
+    /* Tamaño reducido */
     font-weight: 300;
-    letter-spacing: 2px;
-    margin-bottom: 10px;
-    color: #ccc;
+    letter-spacing: 3px;
+    /* Un poco más de espaciado */
+    margin-bottom: 15px;
+    color: #eee;
     text-transform: uppercase;
 }
 
 .title {
-    font-family: 'Trap', 'Outfit', 'Montserrat', sans-serif;
-    font-size: 4rem;
+    font-family: 'Trap', sans-serif;
+    /* Fuente Trap */
+    font-size: 4.5rem;
+    /* Un poco más grande para impacto */
     font-weight: 900;
-    line-height: 1.1;
-    margin: 0 0 15px 0;
+    line-height: 1;
+    margin: 0 0 20px 0;
+    text-transform: uppercase;
 }
 
 .brandName {
@@ -98,30 +101,41 @@
 }
 
 .subtitle {
-    font-family: 'Trap', 'Outfit', 'Montserrat', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 600;
-    letter-spacing: 4px;
-    margin-bottom: 30px;
-    color: #eee;
+    font-family: 'Trap', sans-serif;
+    /* Fuente Trap */
+    font-size: 1.1rem;
+    /* Tamaño reducido */
+    font-weight: 500;
+    letter-spacing: 6px;
+    /* Espaciado amplio estilo "cinematográfico" */
+    margin-bottom: 40px;
+    color: #ddd;
 }
 
+/* CAJA VIDRIOSA (Corregido tamaño) */
 .valuePropBox {
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(5px);
-    padding: 15px 25px;
-    border-radius: 8px;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    display: inline-block;
-    margin-bottom: 40px;
-    min-height: 60px;
-    display: flex;
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    /* Más desenfoque para efecto vidrio */
+    padding: 15px 30px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+
+    /* Esto asegura que sea una caja pequeña centrada, no un cuadrado gigante */
+    display: inline-flex;
     align-items: center;
     justify-content: center;
+
+    margin-bottom: 50px;
+    min-height: 50px;
+    max-width: 90%;
+    /* Evita que sea más ancho que la pantalla en móviles */
 }
 
 .valuePropBox p {
     margin: 0;
+    font-family: 'Trap', sans-serif;
+    /* También aplicamos Trap aquí */
     font-size: 1.1rem;
     color: #fff;
     font-weight: 400;
@@ -132,7 +146,7 @@
     width: 2px;
     height: 1.2em;
     background-color: #00FFFF;
-    margin-left: 5px;
+    margin-left: 8px;
     animation: blink 1s step-end infinite;
 }
 
@@ -148,61 +162,69 @@
     }
 }
 
+/* BOTONES */
 .ctaGroup {
     display: flex;
-    gap: 20px;
+    gap: 25px;
     justify-content: center;
 }
 
 .primaryBtn,
 .secondaryBtn {
-    font-family: 'Trap', 'Outfit', 'Montserrat', sans-serif;
-    padding: 15px 40px;
-    border-radius: 30px;
-    font-weight: 700;
+    font-family: 'Trap', sans-serif;
+    padding: 16px 45px;
+    border-radius: 50px;
+    font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 1px;
     text-decoration: none;
     transition: all 0.3s ease;
+    font-size: 0.9rem;
 }
 
 .primaryBtn {
-    font-family: 'Trap', 'Outfit', 'Montserrat', sans-serif;
     background-color: #00FFFF;
-    color: #000;
+    color: #050505;
     border: 2px solid #00FFFF;
-    box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+    box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
 }
 
 .primaryBtn:hover {
     background-color: transparent;
     color: #00FFFF;
-    box-shadow: 0 0 40px rgba(0, 255, 255, 0.6);
+    box-shadow: 0 0 45px rgba(0, 255, 255, 0.7);
 }
 
+/* BOTÓN SECUNDARIO VIDRIOSO (Corregido) */
 .secondaryBtn {
-    background-color: transparent;
+    /* Estilo vidrio idéntico a la caja de texto */
+    background: rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
     color: #fff;
-    border: 2px solid #fff;
+    border: 1px solid rgba(255, 255, 255, 0.15);
 }
 
 .secondaryBtn:hover {
     background-color: #fff;
-    color: #000;
+    color: #050505;
+    border-color: #fff;
+    box-shadow: 0 0 25px rgba(255, 255, 255, 0.3);
 }
 
+/* RESPONSIVE */
 @media (max-width: 768px) {
     .name {
-        font-size: 1rem;
+        font-size: 0.9rem;
+        letter-spacing: 2px;
     }
 
     .title {
-        font-size: 3rem;
+        font-size: 2.8rem;
     }
 
     .subtitle {
-        font-size: 1.2rem;
-        letter-spacing: 3px;
+        font-size: 1rem;
+        letter-spacing: 4px;
     }
 
     .valuePropBox p {
@@ -218,6 +240,6 @@
     .secondaryBtn {
         width: 100%;
         text-align: center;
-        padding: 12px 0;
+        padding: 15px 0;
     }
 }
