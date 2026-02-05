@@ -1,48 +1,44 @@
-/* CONTENEDOR PRINCIPAL */
+/* --- CONTENEDOR HEADER --- */
 .header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    /* ALTURA FINA */
     height: 60px;
+    /* Altura fina fija */
     padding: 0 5%;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 999;
-    /* Por encima de todo */
+    z-index: 9999;
 
     background: transparent;
-    /* Transparente para que funcione el mix-blend-mode */
+    /* Transparente total */
+    /* Sin bordes ni fondos raros */
 }
 
-/* LOGO - EFECTO NEGATIVO */
+/* --- LOGO --- */
 .logo {
     font-family: 'Trap', sans-serif;
     font-weight: 800;
     font-size: 1.5rem;
     text-decoration: none;
     text-transform: uppercase;
-    display: flex;
-    align-items: center;
-    height: 100%;
 
-    /* LA MAGIA DEL NEGATIVO */
+    /* EFECTO NEGATIVO (BLANCO/NEGRO) */
     color: #fff;
     mix-blend-mode: difference;
+    z-index: 10000;
 }
 
-/* NAVEGACIÓN (Desktop) */
+/* --- NAVEGACIÓN ESCRITORIO --- */
 .nav {
     display: flex;
     gap: 40px;
-    height: 100%;
     align-items: center;
 }
 
-/* ENLACES - EFECTO NEGATIVO */
 .navLink {
     font-family: 'Trap', sans-serif;
     text-decoration: none;
@@ -51,47 +47,66 @@
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
-    transition: opacity 0.3s ease;
 
-    /* LA MAGIA DEL NEGATIVO */
+    /* EFECTO NEGATIVO EN LINKS */
     color: #fff;
     mix-blend-mode: difference;
+    transition: opacity 0.3s ease;
 }
 
 .navLink:hover {
-    opacity: 0.6;
+    opacity: 0.5;
 }
 
-/* BOTÓN DE MENÚ (EL "COSO BLANCO") */
-/* IMPORTANTE: Aquí lo ocultamos por defecto para PC */
+/* --- BOTÓN DE MENÚ (EL PROBLEMA) --- */
 .mobileMenuBtn {
-    display: none;
+    /* OBLIGAMOS A DESAPARECER EN PC */
+    display: none !important;
+
     background: none;
     border: none;
-    font-size: 1.5rem;
     cursor: pointer;
-    padding: 0;
-
-    /* También lleva efecto negativo para cuando aparezca en móvil */
     color: #fff;
     mix-blend-mode: difference;
+    padding: 5px;
 }
 
-/* --- RESPONSIVE (SOLO PARA CELULARES) --- */
+/* --- ESTILOS MÓVILES (Celulares) --- */
 @media (max-width: 768px) {
     .header {
-        height: 50px;
-        /* Más fino aún en celular */
         padding: 0 20px;
+        height: 50px;
     }
 
     /* Ocultamos los links de escritorio */
     .nav {
-        display: none;
+        display: none !important;
     }
 
-    /* AHORA SÍ mostramos el botón, solo en celular */
+    /* Mostramos el botón SOLO en móvil */
     .mobileMenuBtn {
-        display: block;
+        display: block !important;
+    }
+
+    /* Menú desplegable móvil básico */
+    .mobileDropdown {
+        position: absolute;
+        top: 50px;
+        left: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.95);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px 0;
+        gap: 20px;
+    }
+
+    .mobileLink {
+        color: white;
+        text-decoration: none;
+        font-family: 'Trap', sans-serif;
+        font-size: 1.2rem;
+        text-transform: uppercase;
     }
 }
