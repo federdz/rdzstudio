@@ -1,238 +1,105 @@
-"use client";
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { db } from '@/lib/firebase';
-import { collection, doc, onSnapshot, setDoc, addDoc, deleteDoc, updateDoc } from 'firebase/firestore';
+'use client';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { db } from '../lib/firebase'; // Asegurate que la ruta sea correcta
+import { collection, onSnapshot, doc, setDoc, addDoc } from 'firebase/firestore';
 
 const ProjectContext = createContext();
 
 export function ProjectProvider({ children }) {
     const [projects, setProjects] = useState([]);
-    const [siteContent, setSiteContent] = useState({
-        hero: { title: '#RDZ Studio', subtitle: 'Audiovisual Design' },
-        about: { bio: '', photo: '' },
-        contact: { email: 'hello@rdzstudio.com' },
-        identity: { logo: '' }
-    });
-    const [loaded, setLoaded] = useState(false);
-    const [messages, setMessages] = useState([]);
-    const [saving, setSaving] = useState(false);
+    const [loading, setLoading] = useState(true);
+    const [siteContent, setSiteContent] = useState({});
 
-    // 1. Sync Data from Firestore
+    // 1. Cargar datos en tiempo real desde Firebase
     useEffect(() => {
-        // Projects Listener
-        const unsubProjects = onSnapshot(collection(db, 'projects'), (snapshot) => {
-            const pList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            // Sort by ID descending (assuming ID is timestamp or numeric string)
-            pList.sort((a, b) => Number(b.id) - Number(a.id));
-            if (pList.length > 0) setProjects(pList);
+        console.log("🔌 Conectando a Firebase...");
+
+        const unsubscribe = onSnapshot(collection(db, 'projects'), (snapshot) => {
+            const projectsData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+            console.log("✅ Proyectos recibidos:", projectsData.length);
+            setProjects(projectsData);
+            setLoading(false);
+        }, (error) => {
+            console.error("❌ Error cargando proyectos:", error);
+            alert("Error conectando con la base de datos: " + error.message);
         });
 
-        // Content Listener
-        const unsubContent = onSnapshot(doc(db, 'content', 'main'), (doc) => {
-            if (doc.exists()) {
-                setSiteContent(prev => ({ ...prev, ...doc.data() }));
-            }
-        });
-
-        // Messages Listener
-        const unsubMessages = onSnapshot(collection(db, 'messages'), (snapshot) => {
-            const mList = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-            mList.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-            setMessages(mList);
-        });
-
-        setLoaded(true);
-
-        return () => {
-            unsubProjects();
-            unsubContent();
-            unsubMessages();
-        };
+        return () => unsubscribe();
     }, []);
 
-    // Helper: Upload Base64 to Vercel Blob (via our API)
-    const uploadFile = async (data) => {
-        // If it's not a string, or doesn't start with data:, assume it's already a URL
-        if (typeof data !== 'string' || !data.startsWith('data:')) return data;
+    // 2. Función de Guardado (Blindada)
+    const saveAllChanges = async (newData, newImageFile) => {
+        alert("⏳ Iniciando proceso de guardado..."); // Alerta visual inmediata
+        console.log("🚀 Iniciando saveAllChanges...");
 
         try {
-            // Fetch the base64 data to get a Blob
-            const res = await fetch(data);
-            const blob = await res.blob();
-            // Generate a filename (server will handle unique suffix if needed, or we rely on timestamp)
-            const filename = `img-${Date.now()}.${blob.type.split('/')[1] || 'png'}`;
+            let imageUrl = newData.image; // Por defecto usamos la URL que ya tenía
 
-            // Upload via our API Route
-            const response = await fetch(`/api/upload?filename=${filename}`, {
-                method: 'POST',
-                body: blob
-            });
+            // A) Si hay una foto NUEVA (archivo), la subimos a Vercel
+            if (newImageFile instanceof File) {
+                console.log("📸 Detectada imagen nueva, subiendo a Vercel...");
 
-            if (!response.ok) {
-                const err = await response.json();
-                throw new Error(err.error || 'Upload failed');
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: newImageFile,
+                });
+
+                if (!response.ok) {
+                    throw new Error('Fallo la subida de imagen a Vercel: ' + response.statusText);
+                }
+
+                const blob = await response.json();
+                imageUrl = blob.url; // Usamos la nueva URL permanente
+                console.log("✅ Imagen subida:", imageUrl);
             }
 
-            const json = await response.json();
-            return json.url; // The permanent Vercel Blob URL
+            // B) Guardamos los datos en Firebase
+            console.log("💾 Guardando datos en Firestore...");
+
+            const projectData = {
+                ...newData,
+                image: imageUrl || "", // Aseguramos que no vaya undefined
+                updatedAt: new Date().toISOString()
+            };
+
+            // Si tiene ID actualizamos, si no creamos uno nuevo
+            if (newData.id) {
+                await setDoc(doc(db, 'projects', newData.id), projectData);
+            } else {
+                await addDoc(collection(db, 'projects'), projectData);
+            }
+
+            console.log("✨ ¡Guardado exitoso!");
+            alert("✅ ¡Cambios guardados correctamente en la nube!");
+            return true;
+
         } catch (error) {
-            console.error("Upload error:", error);
-            // Fallback: return the base64 so user doesn't lose data immediately, though it won't persist well
-            return data;
+            console.error("⛔ CRITICAL ERROR:", error);
+            alert("❌ Error al guardar: " + error.message);
+            return false;
         }
     };
 
-    // 2. Save Logic
-    const saveToStorage = async () => {
-        if (saving) return;
-        setSaving(true);
-        // We use window.alert for notifications as per existing pattern
-
-        try {
-            console.log("Starting Save process...");
-
-            // A. PROCESS PROJECTS
-            const updatedProjects = await Promise.all(projects.map(async (p) => {
-                // 1. Cover
-                let newCover = await uploadFile(p.cover);
-
-                // 2. Content Blocks
-                let newBlocks = [];
-                if (p.contentBlocks) {
-                    newBlocks = await Promise.all(p.contentBlocks.map(async (b) => {
-                        if (b.type === 'image' && b.content) {
-                            return { ...b, content: await uploadFile(b.content) };
-                        }
-                        if (b.type === 'video' && b.content && b.content.startsWith('data:')) {
-                            // Handle video upload similarly if it's base64 (small videos)
-                            return { ...b, content: await uploadFile(b.content) };
-                        }
-                        if (b.type === 'grid' && Array.isArray(b.content)) {
-                            const newGridContent = await Promise.all(b.content.map(url => uploadFile(url)));
-                            return { ...b, content: newGridContent };
-                        }
-                        return b;
-                    }));
-                }
-
-                // 3. Media (Legacy Gallery)
-                let newMedia = [];
-                if (p.media) {
-                    newMedia = await Promise.all(p.media.map(async (m) => {
-                        return { ...m, url: await uploadFile(m.url) };
-                    }));
-                }
-
-                return {
-                    ...p,
-                    cover: newCover,
-                    contentBlocks: newBlocks,
-                    media: newMedia
-                };
-            }));
-
-            // Write each project to Firestore
-            await Promise.all(updatedProjects.map(p =>
-                setDoc(doc(db, 'projects', p.id), p)
-            ));
-
-            // B. PROCESS SITE CONTENT
-            const updatedContent = { ...siteContent };
-            if (updatedContent.about?.photo) {
-                updatedContent.about.photo = await uploadFile(updatedContent.about.photo);
-            }
-            if (updatedContent.identity?.logo) {
-                updatedContent.identity.logo = await uploadFile(updatedContent.identity.logo);
-            }
-
-            // Write Site Content
-            await setDoc(doc(db, 'content', 'main'), updatedContent);
-
-            alert("SUCCESS: Proyectos e imágenes guardados en la nube (DB + Blob).");
-
-            // NOTE: We rely on onSnapshot to update the 'projects' state with the new URLs
-            // But to prevent UI flicker or confusion, we could strictly set local state here too.
-            // OnSnapshot is safer for consistency.
-
-        } catch (e) {
-            console.error("Save failed", e);
-            alert("ERROR: No se pudo guardar. " + e.message);
-        } finally {
-            setSaving(false);
-        }
-    };
-
-    // 3. Messages Actions
-    const sendMessage = async (msg) => {
-        try {
-            await addDoc(collection(db, 'messages'), {
-                ...msg,
-                createdAt: Date.now(),
-                read: false,
-                starred: false
-            });
-        } catch (e) {
-            console.error("Error sending message", e);
-        }
-    };
-
-    const markAsRead = async (id) => {
-        try {
-            await updateDoc(doc(db, 'messages', id), { read: true });
-        } catch (e) { console.error(e); }
-    };
-
-    const deleteMessage = async (id) => {
-        try {
-            await deleteDoc(doc(db, 'messages', id));
-        } catch (e) { console.error(e); }
-    };
-
-    const toggleStarMessage = async (id) => {
-        try {
-            // We need to know current state. Efficient way: read from local 'messages' state
-            const msg = messages.find(m => m.id === id);
-            if (msg) {
-                await updateDoc(doc(db, 'messages', id), { starred: !msg.starred });
-            }
-        } catch (e) { console.error(e); }
-    };
-
-    // Legacy / Convenience methods
-    const updateProjects = (newProjects) => {
-        // Updates local state tentatively. 
-        // Real persistence happens on saveToStorage.
-        setProjects(newProjects);
-    };
-
-    const updateSiteContent = (newContent) => {
-        setSiteContent(newContent);
-    };
-
-    const reloadFromStorage = async () => {
-        // No-op or Manual Re-fetch if needed. Snapshot usually suffices.
-        console.log("Reloading via Snapshot...");
-    };
+    // Funciones auxiliares para mantener compatibilidad
+    const addProject = (project) => saveAllChanges(project, project.imageFile);
+    const updateProject = (project) => saveAllChanges(project, project.imageFile);
+    const deleteProject = async (id) => { alert("Función borrar pendiente de implementar"); };
 
     return (
         <ProjectContext.Provider value={{
             projects,
-            siteContent,
-            messages,
-            updateProjects,
-            updateSiteContent,
-            sendMessage,
-            markAsRead,
-            deleteMessage,
-            toggleStarMessage,
-            reloadFromStorage,
-            saveToStorage,
-            loaded,
-            saving // Export saving state if needed for UI spinners
+            loading,
+            addProject,
+            updateProject,
+            deleteProject,
+            saveAllChanges, // Exportamos la función maestra
+            siteContent
         }}>
             {children}
         </ProjectContext.Provider>
     );
 }
 
-export const useProjectContext = () => useContext(ProjectContext);
+export function useProjects() {
+    return useContext(ProjectContext);
+}
