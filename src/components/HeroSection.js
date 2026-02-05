@@ -1,10 +1,33 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from './HeroSection.module.css';
 
 export default function HeroSection() {
-    // --- LÓGICA DE TEXTO TYPEWRITER (Intacta) ---
+    // REFERENCIA AL VIDEO (Para control total)
+    const videoRef = useRef(null);
+
+    useEffect(() => {
+        const videoElement = videoRef.current;
+        if (videoElement) {
+            // LÓGICA BLINDADA PARA MÓVIL
+            videoElement.muted = true; // Forzamos silencio
+            videoElement.playsInline = true; // Forzamos reproducción en línea
+
+            const playVideo = async () => {
+                try {
+                    await videoElement.play();
+                } catch (err) {
+                    console.log("Autoplay bloqueado, intentando silenciar nuevamente:", err);
+                    videoElement.muted = true;
+                    videoElement.play().catch(e => console.error("No se pudo reproducir:", e));
+                }
+            };
+            playVideo();
+        }
+    }, []);
+
+    // --- LÓGICA DE TEXTO TYPEWRITER ---
     const phrases = [
         "Especialista en Identidad Visual, Social Media y Video.",
         "Potenciate a través del arte digital."
@@ -45,28 +68,20 @@ export default function HeroSection() {
     return (
         <section className={styles.hero} id="home">
 
-            {/* SOLUCIÓN DEFINITIVA PARA MÓVIL Y FONDO COMPARTIDO:
-               1. Usamos dangerouslySetInnerHTML para forzar los atributos HTML sin que React interfiera.
-               2. El CSS se encarga de dejarlo fijo (fixed) al fondo.
-            */}
-            <div
-                className={styles.videoContainer}
-                dangerouslySetInnerHTML={{
-                    __html: `
-                        <video 
-                            autoplay 
-                            loop 
-                            muted 
-                            playsinline 
-                            webkit-playsinline 
-                            poster="/video-poster.jpg"
-                            class="${styles.videoBackground}"
-                        >
-                            <source src="/video-hero.mp4" type="video/mp4" />
-                        </video>
-                    `
-                }}
-            />
+            {/* CONTENEDOR DEL VIDEO FIXED */}
+            <div className={styles.videoContainer}>
+                <video
+                    ref={videoRef}
+                    autoPlay
+                    loop
+                    muted
+                    playsInline
+                    className={styles.videoBackground}
+                    poster="/video-poster.jpg" // Imagen de respaldo obligatoria
+                >
+                    <source src="/video-hero.mp4" type="video/mp4" />
+                </video>
+            </div>
 
             <div className={styles.content}>
                 <h2 className={styles.name}>Federico Rodríguez Larocca</h2>

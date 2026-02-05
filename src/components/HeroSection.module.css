@@ -7,32 +7,34 @@
     justify-content: center;
     overflow: hidden;
     background: transparent;
-    /* Importante para ver el video */
+    /* CLAVE: Fondo transparente */
 }
 
-/* CONTENEDOR DEL VIDEO */
+/* CONTENEDOR FIJO (Para que se vea en "Sobre Mí") */
 .videoContainer {
     position: fixed;
-    /* CAMBIO CLAVE: FIJO A LA PANTALLA */
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     z-index: -1;
-    /* Detrás de todo el sitio */
+    /* Al fondo de todo */
     overflow: hidden;
+
+    /* TRUCOS ANTI-PARPADEO (Hardware Acceleration) */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    will-change: transform;
 }
 
-/* EL VIDEO EN SÍ */
 .videoBackground {
     width: 100%;
     height: 100%;
     object-fit: cover;
     pointer-events: none;
-    /* Nadie puede tocar play/pausa */
 }
 
-/* CONTENIDO */
+/* CONTENIDO (Igual que antes) */
 .content {
     position: relative;
     z-index: 2;
@@ -102,7 +104,6 @@
     background-color: #00FFFF;
     margin-left: 5px;
     animation: blink 1s step-end infinite;
-    vertical-align: middle;
 }
 
 @keyframes blink {
