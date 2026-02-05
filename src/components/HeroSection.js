@@ -1,25 +1,39 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react'; // Agregamos useRef
+import React, { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import styles from './HeroSection.module.css';
 
 export default function HeroSection() {
-    // REFERENCIA AL VIDEO (El truco para forzar autoplay en iPhone)
+    // REFERENCIA AL VIDEO (Para forzarlo vía código)
     const videoRef = useRef(null);
 
     useEffect(() => {
-        // En cuanto carga la página, forzamos play por código
-        if (videoRef.current) {
-            videoRef.current.playbackRate = 1.0;
-            videoRef.current.defaultMuted = true; // Importante para React
-            videoRef.current.muted = true; // Aseguramos silencio
-            videoRef.current.play().catch(error => {
-                console.log("Autoplay bloqueado por el navegador:", error);
-            });
+        const videoElement = videoRef.current;
+        if (videoElement) {
+            // TRUCO PARA SAFARI IPHONE:
+            // Forzamos el silencio de 3 maneras distintas para asegurarnos.
+            videoElement.muted = true;
+            videoElement.defaultMuted = true;
+            videoElement.setAttribute('muted', ''); // Forzamos el atributo HTML
+            videoElement.playsInline = true;
+
+            // Intentamos reproducir
+            const playPromise = videoElement.play();
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    // Reproducción automática comenzó correctamente
+                })
+                    .catch(error => {
+                        console.log("Autoplay prevenido por el navegador. Intentando forzar mute nuevamente.", error);
+                        // Último intento: asegurar mute y volver a dar play
+                        videoElement.muted = true;
+                        videoElement.play();
+                    });
+            }
         }
     }, []);
 
-    // --- LÓGICA DE TEXTO TYPEWRITER ---
+    // --- LÓGICA DE TEXTO TYPEWRITER (Sin cambios) ---
     const phrases = [
         "Especialista en Identidad Visual, Social Media y Video.",
         "Potenciate a través del arte digital."
@@ -56,25 +70,27 @@ export default function HeroSection() {
         const timer = setTimeout(handleType, typingSpeed);
         return () => clearTimeout(timer);
     }, [text, isDeleting, loopNum, typingSpeed, phrases]);
+    // ----------------------------------
 
     return (
         <section className={styles.hero} id="home">
 
-            {/* VIDEO BLINDADO PARA MÓVIL */}
+            {/* VIDEO LOCAL BLINDADO PARA IPHONE */}
             <video
                 ref={videoRef}
                 autoPlay
                 loop
                 muted
                 playsInline
-                webkit-playsinline="true" // Soporte extra para iOS viejos
+                webkit-playsinline="true"
                 preload="auto"
                 className={styles.videoBackground}
             >
+                {/* Asegurate que este archivo exista en la carpeta 'public' */}
                 <source src="/video-hero.mp4" type="video/mp4" />
             </video>
 
-            <div className={styles.overlay}></div>
+            {/* SE ELIMINÓ EL DIV OVERLAY AQUÍ */}
 
             <div className={styles.content}>
                 <h2 className={styles.name}>Federico Rodríguez Larocca</h2>
