@@ -3,80 +3,104 @@
     top: 0;
     left: 0;
     width: 100%;
-    padding: 1.5rem 2rem;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     z-index: 100;
-    mix-blend-mode: difference;
-    /* Ensures visibility on both light and dark backgrounds */
-    color: white;
+
+    /* CAMBIO CLAVE: Altura fija y menor padding vertical */
+    height: 80px;
+    /* Altura controlada */
+    padding: 0 5%;
+    /* 0 arriba/abajo, 5% a los lados */
+
+    display: flex;
+    align-items: center;
+    /* Esto centra verticalmente el logo y el menú */
+    justify-content: space-between;
+
+    /* Efecto vidrio */
+    background: rgba(0, 0, 0, 0.1);
+    /* Fondo muy sutil */
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
 }
 
+/* LOGO */
 .logo {
-    z-index: 101;
+    display: flex;
+    align-items: center;
+    /* CAMBIO CLAVE: Permitimos que ocupe el ancho que necesite, 
+       pero limitamos la altura para que no empuje el header */
+    height: 100%;
+    max-height: 50px;
+    /* El logo no pasará de 50px de alto */
+    width: auto;
+    /* El ancho se ajusta solo para no deformarse */
 }
 
-.logoPlaceholder {
-    width: 200px;
-    height: 200px;
-    background-color: white;
-    border-radius: 50%;
-    border: 2px solid rgb(255, 255, 255);
+/* Si tu logo es una imagen directa */
+.logo img {
+    height: 100%;
+    width: auto;
+    object-fit: contain;
 }
 
+/* Si tu logo es texto (#RDZ) */
+.logoText {
+    font-family: 'Trap', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    color: #00FFFF;
+    text-decoration: none;
+}
+
+/* NAVEGACIÓN (Desktop) */
 .nav {
     display: flex;
-    gap: 2rem;
+    gap: 30px;
 }
 
-.nav a {
+.navLink {
+    font-family: 'Trap', sans-serif;
+    text-decoration: none;
+    color: #fff;
+    /* Blanco puro para contraste */
     font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 1px;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
-    opacity: 0.7;
-    transition: opacity 0.3s;
+    transition: color 0.3s ease;
+    padding: 10px 0;
+    /* Área de click */
 }
 
-.nav a:hover {
-    opacity: 1;
-    color: var(--color-accent);
+.navLink:hover {
+    color: #00FFFF;
 }
 
-.menuBtn {
+/* MENÚ HAMBURGUESA (Móvil) */
+.mobileMenuBtn {
     display: none;
     background: none;
     border: none;
-    color: inherit;
+    color: white;
+    font-size: 1.5rem;
     cursor: pointer;
-    z-index: 101;
 }
 
+/* RESPONSIVE */
 @media (max-width: 768px) {
-    .menuBtn {
-        display: block;
+    .header {
+        height: 70px;
+        /* Aún más compacto en móvil */
+        padding: 0 20px;
     }
 
     .nav {
-        position: fixed;
-        top: 0;
-        right: 0;
-        width: 100%;
-        height: 100vh;
-        background: rgba(11, 15, 25, 0.95);
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        transform: translateX(100%);
-        transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        display: none;
+        /* Aquí iría tu lógica de menú móvil si la tenés aparte */
     }
 
-    .nav.open {
-        transform: translateX(0);
-    }
-
-    .nav a {
-        font-size: 2rem;
-        font-weight: 700;
+    .mobileMenuBtn {
+        display: block;
     }
 }
