@@ -1,74 +1,69 @@
+/* CONTENEDOR PRINCIPAL */
 .header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    /* ALTURA FINA: Aquí controlamos que no ocupe tanto espacio */
+    /* ALTURA FINA */
     height: 60px;
     padding: 0 5%;
-    /* Espaciado lateral */
 
     display: flex;
     align-items: center;
     justify-content: space-between;
-    z-index: 100;
+    z-index: 999;
+    /* Por encima de todo */
 
-    /* Fondo transparente para permitir que el efecto negativo interactúe con el video/secciones */
     background: transparent;
-    transition: all 0.3s ease;
+    /* Transparente para que funcione el mix-blend-mode */
 }
 
-/* --- EFECTO NEGATIVO (La magia) --- */
-/* Aplicamos esto al Logo, Links y Botón de menú para que inviertan su color según el fondo */
-.logo,
-.navLink,
-.mobileMenuBtn {
-    color: #fff;
-    /* Color base blanco */
-    mix-blend-mode: difference;
-    /* Se vuelve negro sobre fondos claros */
-}
-
-/* ESTILOS DEL LOGO */
+/* LOGO - EFECTO NEGATIVO */
 .logo {
     font-family: 'Trap', sans-serif;
     font-weight: 800;
     font-size: 1.5rem;
-    /* Tamaño del texto del logo */
     text-decoration: none;
     text-transform: uppercase;
     display: flex;
     align-items: center;
     height: 100%;
+
+    /* LA MAGIA DEL NEGATIVO */
+    color: #fff;
+    mix-blend-mode: difference;
 }
 
 /* NAVEGACIÓN (Desktop) */
 .nav {
     display: flex;
     gap: 40px;
-    /* Separación entre links */
     height: 100%;
     align-items: center;
 }
 
+/* ENLACES - EFECTO NEGATIVO */
 .navLink {
     font-family: 'Trap', sans-serif;
     text-decoration: none;
     font-size: 0.85rem;
-    /* Texto fino y elegante */
     font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
     transition: opacity 0.3s ease;
+
+    /* LA MAGIA DEL NEGATIVO */
+    color: #fff;
+    mix-blend-mode: difference;
 }
 
 .navLink:hover {
     opacity: 0.6;
-    /* Efecto sutil al pasar el mouse */
 }
 
-/* MENÚ HAMBURGUESA (Móvil) */
+/* BOTÓN DE MENÚ (EL "COSO BLANCO") */
+/* IMPORTANTE: Aquí lo ocultamos por defecto para PC */
 .mobileMenuBtn {
     display: none;
     background: none;
@@ -76,23 +71,27 @@
     font-size: 1.5rem;
     cursor: pointer;
     padding: 0;
+
+    /* También lleva efecto negativo para cuando aparezca en móvil */
+    color: #fff;
+    mix-blend-mode: difference;
 }
 
-/* RESPONSIVE */
+/* --- RESPONSIVE (SOLO PARA CELULARES) --- */
 @media (max-width: 768px) {
     .header {
         height: 50px;
-        /* Aún más fino en celulares */
+        /* Más fino aún en celular */
         padding: 0 20px;
     }
 
+    /* Ocultamos los links de escritorio */
     .nav {
         display: none;
-        /* Oculta menú de escritorio */
     }
 
+    /* AHORA SÍ mostramos el botón, solo en celular */
     .mobileMenuBtn {
         display: block;
-        /* Muestra hamburguesa */
     }
 }
