@@ -1,44 +1,53 @@
-/* --- CONTENEDOR HEADER --- */
+/* CONTENEDOR PRINCIPAL */
 .header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 60px;
-    /* Altura fina fija */
+    /* Altura fina */
     padding: 0 5%;
 
     display: flex;
     align-items: center;
     justify-content: space-between;
+
+    /* Z-INDEX ALTO: Para estar siempre arriba */
     z-index: 9999;
 
     background: transparent;
-    /* Transparente total */
-    /* Sin bordes ni fondos raros */
+
+    /* --- LA SOLUCIÓN DEFINITIVA DE COLOR --- */
+    /* Aplicamos la diferencia a TODO el header contra el fondo */
+    mix-blend-mode: difference;
+    color: #ffffff;
+    /* El color base debe ser blanco puro */
 }
 
-/* --- LOGO --- */
+/* LOGO */
 .logo {
     font-family: 'Trap', sans-serif;
     font-weight: 800;
     font-size: 1.5rem;
     text-decoration: none;
     text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    height: 100%;
 
-    /* EFECTO NEGATIVO (BLANCO/NEGRO) */
-    color: #fff;
-    mix-blend-mode: difference;
-    z-index: 10000;
+    /* Hereda el color blanco del header para que funcione el blend */
+    color: inherit;
 }
 
-/* --- NAVEGACIÓN ESCRITORIO --- */
+/* NAVEGACIÓN (Desktop) */
 .nav {
     display: flex;
     gap: 40px;
+    height: 100%;
     align-items: center;
 }
 
+/* ENLACES */
 .navLink {
     font-family: 'Trap', sans-serif;
     text-decoration: none;
@@ -47,59 +56,64 @@
     letter-spacing: 1px;
     text-transform: uppercase;
     cursor: pointer;
-
-    /* EFECTO NEGATIVO EN LINKS */
-    color: #fff;
-    mix-blend-mode: difference;
     transition: opacity 0.3s ease;
+
+    /* Hereda el color blanco */
+    color: inherit;
 }
 
 .navLink:hover {
-    opacity: 0.5;
+    opacity: 0.6;
 }
 
-/* --- BOTÓN DE MENÚ (EL PROBLEMA) --- */
+/* BOTÓN DE MENÚ (EL "COSO BLANCO") */
 .mobileMenuBtn {
-    /* OBLIGAMOS A DESAPARECER EN PC */
+    /* OBLIGATORIO: Desaparece en PC */
     display: none !important;
 
     background: none;
     border: none;
     cursor: pointer;
-    color: #fff;
-    mix-blend-mode: difference;
-    padding: 5px;
+    padding: 0;
+    color: inherit;
+    /* Hereda blanco */
 }
 
-/* --- ESTILOS MÓVILES (Celulares) --- */
+/* --- RESPONSIVE (CELULARES) --- */
 @media (max-width: 768px) {
     .header {
-        padding: 0 20px;
         height: 50px;
+        padding: 0 20px;
+        /* En móvil a veces 'difference' se ve raro sobre fondos complejos, 
+           pero lo mantenemos si así lo deseas. */
     }
 
-    /* Ocultamos los links de escritorio */
     .nav {
         display: none !important;
     }
 
-    /* Mostramos el botón SOLO en móvil */
+    /* Muestra botón SOLO en móvil */
     .mobileMenuBtn {
         display: block !important;
     }
 
-    /* Menú desplegable móvil básico */
+    /* Menú desplegable */
     .mobileDropdown {
         position: absolute;
         top: 50px;
         left: 0;
         width: 100%;
-        background: rgba(0, 0, 0, 0.95);
+        background: #000;
+        /* Fondo negro sólido para el menú desplegado */
         display: flex;
         flex-direction: column;
         align-items: center;
         padding: 20px 0;
         gap: 20px;
+        z-index: 10000;
+
+        /* El menú desplegado NO debe tener mix-blend-mode o se verá transparente */
+        mix-blend-mode: normal;
     }
 
     .mobileLink {
