@@ -1,10 +1,25 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react'; // Agregamos useRef
 import Link from 'next/link';
 import styles from './HeroSection.module.css';
 
 export default function HeroSection() {
-    // --- LÓGICA DE TEXTO TYPEWRITER (Tu código original) ---
+    // REFERENCIA AL VIDEO (El truco para forzar autoplay en iPhone)
+    const videoRef = useRef(null);
+
+    useEffect(() => {
+        // En cuanto carga la página, forzamos play por código
+        if (videoRef.current) {
+            videoRef.current.playbackRate = 1.0;
+            videoRef.current.defaultMuted = true; // Importante para React
+            videoRef.current.muted = true; // Aseguramos silencio
+            videoRef.current.play().catch(error => {
+                console.log("Autoplay bloqueado por el navegador:", error);
+            });
+        }
+    }, []);
+
+    // --- LÓGICA DE TEXTO TYPEWRITER ---
     const phrases = [
         "Especialista en Identidad Visual, Social Media y Video.",
         "Potenciate a través del arte digital."
@@ -42,20 +57,20 @@ export default function HeroSection() {
         return () => clearTimeout(timer);
     }, [text, isDeleting, loopNum, typingSpeed, phrases]);
 
-    // ----------------------------------
-
     return (
         <section className={styles.hero} id="home">
 
-            {/* VIDEO LOCAL Y AUTOMÁTICO */}
+            {/* VIDEO BLINDADO PARA MÓVIL */}
             <video
+                ref={videoRef}
                 autoPlay
                 loop
                 muted
                 playsInline
+                webkit-playsinline="true" // Soporte extra para iOS viejos
+                preload="auto"
                 className={styles.videoBackground}
             >
-                {/* Busca el archivo directamente en la carpeta public */}
                 <source src="/video-hero.mp4" type="video/mp4" />
             </video>
 

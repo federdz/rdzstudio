@@ -180,8 +180,10 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    /* Esto hace que no se deforme */
     z-index: 0;
+
+    /* AGREGAR ESTO: Evita que el usuario interactúe con el video (play/pausa) */
+    pointer-events: none;
 }
 
 .overlay {
