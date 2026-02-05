@@ -9,8 +9,8 @@ export const metadata = {
     },
     openGraph: {
         title: "RDZ Studio | Portfolio Oficial",
-        description: "Diseño gráfico, web y producción audiovisual. Mirá mis últimos proyectos.",
-        url: "https://rdz-studio.vercel.app", // (Poné aquí el link real que te dio Vercel)
+        description: "Diseño gráfico y producción audiovisual. Mirá mis últimos proyectos.",
+        url: "https://rdzstudio.vercel.app", // (Poné aquí el link real que te dio Vercel)
         siteName: "RDZ Studio",
         images: [
             {
