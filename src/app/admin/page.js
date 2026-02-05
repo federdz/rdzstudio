@@ -1,9 +1,11 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import TabProjects from '@/components/admin/TabProjects';
-import TabContent from '@/components/admin/TabContent'; // Nombre correcto
-import TabInbox from '@/components/admin/TabInbox'; // RESTAURADO
+import TabContent from '@/components/admin/TabContent';
+import TabInbox from '@/components/admin/TabInbox';
 import { Lock, User } from 'lucide-react';
+// IMPORTAMOS EL CONTEXTO
+import { useProjectContext } from '@/context/ProjectContext';
 
 export default function AdminPage() {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -12,7 +14,12 @@ export default function AdminPage() {
     const [error, setError] = useState('');
     const [activeTab, setActiveTab] = useState('projects');
 
-    // Comprobar sesión
+    // --- LÓGICA DE NOTIFICACIONES ---
+    const { messages } = useProjectContext();
+    // Contamos los no leídos. Si messages es undefined, ponemos 0.
+    const unreadCount = messages ? messages.filter(msg => !msg.read).length : 0;
+    // -------------------------------
+
     useEffect(() => {
         const session = localStorage.getItem('rdz_admin_session');
         if (session === 'true') {
@@ -22,8 +29,6 @@ export default function AdminPage() {
 
     const handleLogin = (e) => {
         e.preventDefault();
-
-        // LEEMOS LAS VARIABLES DE ENTORNO
         const validUser = process.env.NEXT_PUBLIC_ADMIN_USER;
         const validPass = process.env.NEXT_PUBLIC_ADMIN_PASSWORD;
 
@@ -168,10 +173,29 @@ export default function AdminPage() {
                             borderBottom: activeTab === 'inbox' ? '2px solid #00FFFF' : '2px solid transparent',
                             height: '60px',
                             cursor: 'pointer',
-                            fontWeight: '500'
+                            fontWeight: '500',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '8px'
                         }}
                     >
                         Inbox
+                        {/* PUNTO DE NOTIFICACIÓN ROJO */}
+                        {unreadCount > 0 && (
+                            <span style={{
+                                background: '#ff4444',
+                                color: 'white',
+                                fontSize: '11px',
+                                fontWeight: 'bold',
+                                padding: '2px 6px',
+                                borderRadius: '10px',
+                                minWidth: '18px',
+                                textAlign: 'center',
+                                lineHeight: '1'
+                            }}>
+                                {unreadCount}
+                            </span>
+                        )}
                     </button>
                 </div>
 
