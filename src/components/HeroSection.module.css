@@ -76,9 +76,9 @@
     font-weight: 300;
     letter-spacing: 3px;
     /* Un poco más de espaciado */
-    margin-bottom: 15px;
+    margin-bottom: 7.5px;
     color: #eee;
-    text-transform: uppercase;
+    text-transform: none;
 }
 
 .title {
@@ -89,7 +89,7 @@
     font-weight: 900;
     line-height: 1;
     margin: 0 0 20px 0;
-    text-transform: uppercase;
+    text-transform: none;
 }
 
 .brandName {
@@ -108,7 +108,7 @@
     font-weight: 500;
     letter-spacing: 6px;
     /* Espaciado amplio estilo "cinematográfico" */
-    margin-bottom: 40px;
+    margin-bottom: 7.5px;
     color: #ddd;
 }
 
@@ -117,7 +117,7 @@
     background: rgba(255, 255, 255, 0.08);
     backdrop-filter: blur(10px);
     /* Más desenfoque para efecto vidrio */
-    padding: 15px 30px;
+    padding: 7.5px 20px;
     border-radius: 12px;
     border: 1px solid rgba(255, 255, 255, 0.15);
 
