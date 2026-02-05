@@ -10,8 +10,13 @@ export default function Header() {
     const { siteContent } = useProjectContext();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-    // Safety check for siteContent
-    const logoUrl = siteContent?.identity?.logo;
+    // LÓGICA HÍBRIDA (VELOCIDAD + FLEXIBILIDAD)
+    // 1. Intentamos leer el logo de la base de datos (Firebase)
+    const firebaseLogo = siteContent?.identity?.logo;
+
+    // 2. Si Firebase aún no cargó (o no hay logo), usamos el archivo local '/logo.png'
+    // IMPORTANTE: Tenés que tener un archivo llamado 'logo.png' en tu carpeta 'public'
+    const logoSrc = firebaseLogo || '/logo.png';
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
@@ -19,11 +24,14 @@ export default function Header() {
         <header className={styles.header}>
             <div className={styles.logo}>
                 <Link href="/">
-                    {logoUrl ? (
-                        <img src={logoUrl} alt="Logo" style={{ height: '80px', width: 'auto', objectFit: 'contain' }} key={logoUrl} />
-                    ) : (
-                        <div className={styles.logoPlaceholder}></div>
-                    )}
+                    {/* Renderizamos la imagen directamente. 
+                        Al iniciar, mostrará '/logo.png' instantáneamente (0 espera).
+                        Si luego Firebase carga una imagen distinta, se actualizará sola. */}
+                    <img
+                        src={logoSrc}
+                        alt="RDZ Studio"
+                        style={{ height: '80px', width: 'auto', objectFit: 'contain' }}
+                    />
                 </Link>
             </div>
 

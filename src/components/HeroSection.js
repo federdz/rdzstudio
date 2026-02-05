@@ -1,92 +1,82 @@
 "use client";
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
 import styles from './HeroSection.module.css';
-import { motion } from 'framer-motion';
-
-import { useProjectContext } from '@/context/ProjectContext';
 
 export default function HeroSection() {
-    const { siteContent } = useProjectContext();
-    const fullText = siteContent?.hero?.subtitle || "Especialista en identidad visual y contenido audiovisual de alto impacto.";
-    const [displayedText, setDisplayedText] = useState("");
-    const [isTyping, setIsTyping] = useState(true);
+    // --- LÓGICA DE TEXTO TYPEWRITER ---
+    const phrases = [
+        "Especialista en Identidad Visual, Social Media y Video.",
+        "Potenciate a través del arte digital."
+    ];
+
+    const [text, setText] = useState('');
+    const [isDeleting, setIsDeleting] = useState(false);
+    const [loopNum, setLoopNum] = useState(0);
+    const [typingSpeed, setTypingSpeed] = useState(100);
 
     useEffect(() => {
-        // Reset state when text changes
-        setDisplayedText("");
-        setIsTyping(true);
+        const i = loopNum % phrases.length;
+        const fullText = phrases[i];
 
-        // Delay start slightly to separate from initial fade-ins
-        const startTimeout = setTimeout(() => {
-            let index = 0;
-            const typeInterval = setInterval(() => {
-                if (index < fullText.length) {
-                    setDisplayedText((prev) => prev + fullText.charAt(index));
-                    index++;
-                } else {
-                    setIsTyping(false);
-                    clearInterval(typeInterval);
-                }
-            }, 50); // Speed: 50ms per char ~ 3-4 seconds total
+        const handleType = () => {
+            setText(isDeleting
+                ? fullText.substring(0, text.length - 1)
+                : fullText.substring(0, text.length + 1)
+            );
 
-            return () => clearInterval(typeInterval);
-        }, 1000);
+            // Velocidades
+            let speed = isDeleting ? 40 : 80;
 
-        return () => clearTimeout(startTimeout);
-    }, [fullText]);
+            if (!isDeleting && text === fullText) {
+                // Terminó de escribir -> Espera 2 seg
+                speed = 2000;
+                setIsDeleting(true);
+            } else if (isDeleting && text === '') {
+                // Terminó de borrar -> Pasa a la siguiente
+                setIsDeleting(false);
+                setLoopNum(loopNum + 1);
+                speed = 500;
+            }
+
+            setTypingSpeed(speed);
+        };
+
+        const timer = setTimeout(handleType, typingSpeed);
+        return () => clearTimeout(timer);
+    }, [text, isDeleting, loopNum, typingSpeed, phrases]);
+    // ----------------------------------
 
     return (
-        <section className={styles.hero} id="home">
+        <section className={styles.hero}>
             <div className={styles.content}>
-                <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ duration: 0.8 }}
-                    className={styles.name}
-                >
-                    Federico Rodriguez Larocca
-                </motion.p>
 
-                <motion.h1
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.8, ease: "easeOut", delay: 0.1 }}
-                    className={styles.title}
-                >
+                <h2 className={styles.name}>Federico Rodríguez Larocca</h2>
+
+                <h1 className={styles.title}>
                     <span className={styles.brandName}>#RDZ</span>
                     <span className={styles.studioName}>Studio</span>
-                </motion.h1>
+                </h1>
 
-                <motion.p
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2, duration: 0.8, ease: "easeOut" }}
-                    className={styles.subtitle}
-                >
-                    Audiovisual Design
-                </motion.p>
+                <h3 className={styles.subtitle}>DISEÑO AUDIOVISUAL</h3>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.4, duration: 0.8, ease: "easeOut" }}
-                    className={styles.valuePropBox}
-                >
+                {/* AQUÍ ESTÁ EL TEXTO CAMBIANTE DENTRO DE TU CAJA DE SIEMPRE */}
+                <div className={styles.valuePropBox}>
                     <p>
-                        {displayedText}
-                        {isTyping && <span className={styles.cursor}></span>}
+                        {text}
+                        <span className={styles.cursor}></span>
                     </p>
-                </motion.div>
+                </div>
 
-                <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.6, duration: 0.8, ease: "easeOut" }}
-                    className={styles.ctaGroup}
-                >
-                    <a href="#works" className={styles.primaryBtn}>Proyectos</a>
-                    <a href="#contact" className={styles.secondaryBtn}>Contacto</a>
-                </motion.div>
+                <div className={styles.ctaGroup}>
+                    <Link href="#works" className={styles.primaryBtn}>
+                        Proyectos
+                    </Link>
+                    <Link href="#contact" className={styles.secondaryBtn}>
+                        Contacto
+                    </Link>
+                </div>
+
             </div>
         </section>
     );

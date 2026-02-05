@@ -4,29 +4,35 @@ import Link from 'next/link';
 import styles from './ProjectsSection.module.css';
 import { useProjectContext } from '@/context/ProjectContext';
 
-export default function ProjectsSection({ activeFilter = 'Todos', onFilterChange }) {
-    const { projects, loaded } = useProjectContext();
+export default function ProjectsSection() {
+    const { projects, loading, visibleCategories } = useProjectContext();
+    const [activeFilter, setActiveFilter] = useState('Todos');
     const [visibleCount, setVisibleCount] = useState(6);
 
-    if (!loaded) return null;
+    if (loading) return <div style={{ padding: '50px', textAlign: 'center', color: '#fff' }}>⏳ Cargando proyectos...</div>;
 
-    const categories = ['Todos', 'Social Media', 'Identidad Visual', 'Audiovisual'];
+    // CONSTRUCCIÓN SEGURA DE CATEGORÍAS
+    // 'visibleCategories' ahora siempre tendrá al menos las 3 por defecto gracias al Contexto.
+    // Solo agregamos 'Todos' al principio.
+    const categories = ['Todos', ...(visibleCategories || [])];
 
-    // Sort projects by ID descending (Newest First) assuming ID is timestamp or incremental
-    const sortedProjects = [...projects].sort((a, b) => Number(b.id) - Number(a.id));
+    // Ordenar por fecha
+    const sortedProjects = [...projects].sort((a, b) => {
+        const dateA = new Date(a.updatedAt || 0);
+        const dateB = new Date(b.updatedAt || 0);
+        return dateB - dateA;
+    });
 
     const filteredProjects = activeFilter === 'Todos'
         ? sortedProjects
-        : sortedProjects.filter(p => p.category === activeFilter);
+        : sortedProjects.filter(p => String(p.category || '').trim() === String(activeFilter).trim());
 
     const visibleProjects = filteredProjects.slice(0, visibleCount);
     const hasMore = visibleCount < filteredProjects.length;
 
     const handleFilterClick = (cat) => {
-        if (onFilterChange) {
-            onFilterChange(cat);
-            setVisibleCount(6); // Reset pagination on filter change
-        }
+        setActiveFilter(cat);
+        setVisibleCount(6);
     };
 
     const handleLoadMore = () => {
@@ -53,20 +59,26 @@ export default function ProjectsSection({ activeFilter = 'Todos', onFilterChange
                 </div>
 
                 <div className={styles.grid}>
-                    {visibleProjects.map(project => (
-                        <Link key={project.id} href={`/project/${project.id}`} className={styles.cardLink}>
-                            <div className={styles.card}>
-                                <div
-                                    className={styles.cardImage}
-                                    style={{ backgroundImage: `url(${project.cover})` }}
-                                />
-                                <div className={styles.cardOverlay}>
-                                    <h4>{project.title}</h4>
-                                    <span>{project.category}</span>
+                    {visibleProjects.length > 0 ? (
+                        visibleProjects.map(project => (
+                            <Link key={project.id} href={`/project/${project.id}`} className={styles.cardLink}>
+                                <div className={styles.card}>
+                                    <div
+                                        className={styles.cardImage}
+                                        style={{ backgroundImage: `url(${project.cover || project.image})` }}
+                                    />
+                                    <div className={styles.cardOverlay}>
+                                        <h4>{project.title}</h4>
+                                        <span>{project.category}</span>
+                                    </div>
                                 </div>
-                            </div>
-                        </Link>
-                    ))}
+                            </Link>
+                        ))
+                    ) : (
+                        <p style={{ color: '#888', gridColumn: '1/-1', textAlign: 'center' }}>
+                            No hay proyectos en esta categoría aún.
+                        </p>
+                    )}
                 </div>
 
                 {hasMore && (

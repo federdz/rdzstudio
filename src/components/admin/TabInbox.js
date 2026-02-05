@@ -1,146 +1,131 @@
-"use client";
-import React from 'react';
-import styles from './Admin.module.css';
+import React, { useState } from 'react';
+import { Mail, Trash2, Clock, User } from 'lucide-react';
 import { useProjectContext } from '@/context/ProjectContext';
-import { RefreshCw, CheckCircle } from 'lucide-react';
 
 export default function TabInbox() {
-    const { messages, markAsRead, deleteMessage, toggleStarMessage, reloadFromStorage } = useProjectContext();
-    const [selectedMsg, setSelectedMsg] = React.useState(null);
+    // Traemos markAsRead del contexto
+    const { messages, deleteMessage, markAsRead } = useProjectContext();
+    const [selectedMessage, setSelectedMessage] = useState(null);
 
-    const handleOpen = (msg) => {
-        setSelectedMsg(msg);
-        if (!msg.read) markAsRead(msg.id);
+    const handleSelectMessage = (msg) => {
+        setSelectedMessage(msg);
+        // Si no estaba leído, lo marcamos ahora
+        if (!msg.read) {
+            markAsRead(msg.id);
+        }
     };
 
-    const handleClose = () => {
-        setSelectedMsg(null);
+    const handleDelete = async (e, id) => {
+        e.stopPropagation();
+        await deleteMessage(id);
+        if (selectedMessage?.id === id) {
+            setSelectedMessage(null);
+        }
+    };
+
+    const styles = {
+        container: { display: 'flex', height: '100%', gap: '20px', color: '#ccc' },
+        list: { width: '350px', borderRight: '1px solid #333', overflowY: 'auto', display: 'flex', flexDirection: 'column' },
+
+        // ESTILO DINÁMICO SEGÚN SI ESTÁ LEÍDO O NO
+        item: (msg, isSelected) => ({
+            padding: '20px',
+            borderBottom: '1px solid #222',
+            cursor: 'pointer',
+            background: isSelected ? '#1a1a1a' : 'transparent',
+            // Si NO está leído, borde cyan a la izquierda
+            borderLeft: !msg.read ? '4px solid #00FFFF' : '4px solid transparent',
+            transition: 'background 0.2s'
+        }),
+
+        // TEXTO DINÁMICO
+        senderName: (isRead) => ({
+            fontWeight: isRead ? 'normal' : 'bold',
+            color: isRead ? '#bbb' : '#fff', // Blanco brillante si es nuevo
+            fontSize: '1rem'
+        }),
+
+        subjectText: (isRead) => ({
+            color: isRead ? '#666' : '#00FFFF', // Cyan si es nuevo, gris si es viejo
+            fontSize: '0.9rem',
+            marginBottom: '5px',
+            fontWeight: isRead ? 'normal' : '500'
+        }),
+
+        detail: { flex: 1, padding: '40px', overflowY: 'auto', position: 'relative' },
+        empty: { flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#555', flexDirection: 'column', gap: '10px' },
+        subjectTitle: { fontSize: '1.5rem', color: 'white', marginBottom: '10px', fontWeight: 'bold' },
+        meta: { display: 'flex', alignItems: 'center', gap: '15px', marginBottom: '30px', fontSize: '0.9rem', color: '#888', borderBottom: '1px solid #333', paddingBottom: '20px' },
+        body: { fontSize: '1.1rem', lineHeight: '1.6', color: '#ddd', whiteSpace: 'pre-wrap' },
+        deleteBtn: {
+            background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer',
+            display: 'flex', alignItems: 'center', gap: '5px', marginLeft: 'auto'
+        }
     };
 
     return (
-        <div style={{ position: 'relative' }}>
-            {/* TOOLBAR */}
-            <div className={styles.header} style={{ marginBottom: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <h1 style={{ fontSize: '1.5rem' }}>Inbox <span style={{ fontSize: '1rem', color: '#666', fontWeight: 'normal' }}>({messages ? messages.length : 0})</span></h1>
-                <button
-                    onClick={reloadFromStorage}
-                    style={{ background: 'none', border: '1px solid #333', padding: '0.5rem 1rem', borderRadius: '6px', color: '#ccc', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.5rem', transition: 'all 0.2s' }}
-                    onMouseOver={e => e.currentTarget.style.borderColor = 'cyan'}
-                    onMouseOut={e => e.currentTarget.style.borderColor = '#333'}
-                >
-                    <RefreshCw size={16} /> Refresh
-                </button>
-            </div>
-
-            {/* MESSAGES LIST */}
-            <div style={{ background: '#111', borderRadius: '8px', overflow: 'hidden', border: '1px solid #222' }}>
-                {messages && messages.length > 0 ? (
-                    <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.9rem' }}>
-                        <thead>
-                            <tr style={{ background: '#1a1a1a', borderBottom: '1px solid #333', color: '#888' }}>
-                                <th style={{ padding: '1rem', width: '50px' }}>Stats</th>
-                                <th style={{ padding: '1rem', width: '200px' }}>From</th>
-                                <th style={{ padding: '1rem' }}>Subject</th>
-                                <th style={{ padding: '1rem', width: '120px' }}>Date</th>
-                                <th style={{ padding: '1rem', width: '80px', textAlign: 'right' }}>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {messages.map(msg => (
-                                <tr
-                                    key={msg.id}
-                                    style={{
-                                        borderBottom: '1px solid #222',
-                                        cursor: 'pointer',
-                                        backgroundColor: !msg.read ? '#1a1f1f' : 'transparent',
-                                        fontWeight: !msg.read ? 'bold' : 'normal',
-                                        color: !msg.read ? '#fff' : '#aaa'
-                                    }}
-                                    onClick={() => handleOpen(msg)}
-                                >
-                                    <td style={{ padding: '1rem' }} onClick={e => e.stopPropagation()}>
-                                        <div style={{ display: 'flex', gap: '10px' }}>
-                                            {!msg.read && <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'cyan', marginTop: 6 }}></div>}
-                                        </div>
-                                    </td>
-                                    <td style={{ padding: '1rem' }}>
-                                        {msg.name}
-                                    </td>
-                                    <td style={{ padding: '1rem' }}>
-                                        {msg.subject || '(No Subject)'}
-                                    </td>
-                                    <td style={{ padding: '1rem', fontSize: '0.8rem' }}>
-                                        {msg.date}
-                                    </td>
-                                    <td style={{ padding: '1rem', textAlign: 'right' }} onClick={e => e.stopPropagation()}>
-                                        <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
-                                            <button
-                                                onClick={() => toggleStarMessage(msg.id)}
-                                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: msg.starred ? 'gold' : '#444' }}
-                                                title="Star"
-                                            >
-                                                ★
-                                            </button>
-                                            <button
-                                                onClick={() => { if (confirm('Delete message?')) deleteMessage(msg.id) }}
-                                                style={{ background: 'none', border: 'none', cursor: 'pointer', color: '#444', transition: 'color 0.2s' }}
-                                                onMouseOver={e => e.currentTarget.style.color = 'red'}
-                                                onMouseOut={e => e.currentTarget.style.color = '#444'}
-                                                title="Delete"
-                                            >
-                                                ✕
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                ) : (
-                    <div style={{ padding: '4rem', textAlign: 'center', color: '#666' }}>
-                        Inbox is empty
-                    </div>
+        <div style={styles.container}>
+            {/* LISTA DE MENSAJES */}
+            <div style={styles.list}>
+                {messages.length === 0 && (
+                    <div style={{ padding: '20px', textAlign: 'center', color: '#666' }}>No hay mensajes nuevos.</div>
                 )}
-            </div>
 
-            {/* MESSAGE DETAIL MODAL */}
-            {selectedMsg && (
-                <div style={{
-                    position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-                    background: 'rgba(0,0,0,0.8)', zIndex: 2000,
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                }}>
-                    <div style={{ background: '#111', padding: '2rem', borderRadius: '12px', width: '90%', maxWidth: '700px', border: '1px solid #333' }}>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '2rem', borderBottom: '1px solid #333', paddingBottom: '1rem' }}>
-                            <div>
-                                <h2 style={{ color: 'white', marginBottom: '0.5rem' }}>{selectedMsg.subject || '(No Subject)'}</h2>
-                                <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
-                                    <span style={{ color: 'cyan', fontWeight: 'bold' }}>{selectedMsg.name}</span>
-                                    <span style={{ color: '#666', fontSize: '0.9rem' }}>&lt;{selectedMsg.email}&gt;</span>
-                                </div>
-                            </div>
-                            <span style={{ color: '#666', fontSize: '0.9rem' }}>{selectedMsg.date}</span>
+                {messages.map(msg => (
+                    <div
+                        key={msg.id}
+                        style={styles.item(msg, selectedMessage?.id === msg.id)}
+                        onClick={() => handleSelectMessage(msg)}
+                    >
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '5px' }}>
+                            <span style={styles.senderName(msg.read)}>{msg.name}</span>
+                            <span style={{ fontSize: '0.75rem', color: msg.read ? '#444' : '#888' }}>
+                                {new Date(msg.date).toLocaleDateString()}
+                            </span>
                         </div>
+                        <div style={styles.subjectText(msg.read)}>{msg.subject || '(Sin Asunto)'}</div>
 
-                        <div style={{ color: '#ddd', lineHeight: '1.6', fontSize: '1rem', minHeight: '150px', whiteSpace: 'pre-wrap' }}>
-                            {selectedMsg.body}
-                        </div>
-
-                        <div style={{ marginTop: '2rem', display: 'flex', justifyContent: 'flex-end', gap: '1rem' }}>
-                            <button
-                                onClick={() => { if (confirm('Delete message?')) { deleteMessage(selectedMsg.id); handleClose(); } }}
-                                style={{ padding: '0.6rem 1.5rem', background: '#330000', color: 'red', border: '1px solid red', borderRadius: '6px', cursor: 'pointer' }}
-                            >
-                                Delete
-                            </button>
-                            <button
-                                onClick={handleClose}
-                                style={{ padding: '0.6rem 1.5rem', background: '#333', color: 'white', border: 'none', borderRadius: '6px', cursor: 'pointer' }}
-                            >
-                                Close
-                            </button>
+                        <div style={{ fontSize: '0.85rem', color: '#555', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                            {msg.message}
                         </div>
                     </div>
+                ))}
+            </div>
+
+            {/* DETALLE */}
+            {selectedMessage ? (
+                <div style={styles.detail}>
+                    <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '20px' }}>
+                        <button
+                            onClick={(e) => handleDelete(e, selectedMessage.id)}
+                            style={{ ...styles.deleteBtn, padding: '10px', background: 'rgba(255, 68, 68, 0.1)', borderRadius: '6px' }}
+                        >
+                            <Trash2 size={18} /> Borrar Mensaje
+                        </button>
+                    </div>
+
+                    <h2 style={styles.subjectTitle}>{selectedMessage.subject}</h2>
+
+                    <div style={styles.meta}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <User size={16} />
+                            <span style={{ color: '#00FFFF' }}>{selectedMessage.name}</span>
+                            &lt;{selectedMessage.email}&gt;
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                            <Clock size={16} />
+                            {new Date(selectedMessage.date).toLocaleString()}
+                        </div>
+                    </div>
+
+                    <div style={styles.body}>
+                        {selectedMessage.message}
+                    </div>
+                </div>
+            ) : (
+                <div style={styles.empty}>
+                    <Mail size={48} />
+                    <p>Seleccioná un mensaje para leerlo</p>
                 </div>
             )}
         </div>

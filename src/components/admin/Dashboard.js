@@ -1,17 +1,18 @@
 "use client";
 import React, { useState } from 'react';
-import styles from './Admin.module.css';
-import { Layout, FileText, Mail, LogOut, Save } from 'lucide-react';
+import styles from './Admin.module.css'; // Asegurate de que la ruta sea correcta
+import { Layout, FileText, Mail, LogOut } from 'lucide-react';
 import TabProjects from './TabProjects';
 import TabContent from './TabContent';
 import TabInbox from './TabInbox';
-import { useProjectContext } from '@/context/ProjectContext';
+import { useProjectContext } from '@/context/ProjectContext'; // Ojo: Si falla, probá '../context/ProjectContext'
 
 export default function Dashboard({ onLogout }) {
     const [activeTab, setActiveTab] = useState('projects');
-    const { saveToStorage, messages } = useProjectContext();
+    const { messages } = useProjectContext(); // Ya no necesitamos saveAllChanges acá
 
-    const unreadCount = messages ? messages.filter(m => !m.read).length : 0;
+    // Calculamos mensajes sin leer de forma segura
+    const unreadCount = Array.isArray(messages) ? messages.filter(m => !m.read).length : 0;
 
     return (
         <div className={styles.dashboard}>
@@ -47,27 +48,7 @@ export default function Dashboard({ onLogout }) {
                     </button>
                 </nav>
 
-                <button
-                    onClick={saveToStorage}
-                    style={{
-                        background: '#00FFFF',
-                        color: 'black',
-                        border: 'none',
-                        padding: '1rem',
-                        borderRadius: '6px',
-                        fontWeight: 'bold',
-                        cursor: 'pointer',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        gap: '0.5rem',
-                        width: '100%',
-                        marginBottom: '1rem',
-                        marginTop: 'auto'
-                    }}
-                >
-                    <Save size={18} /> GUARDAR CAMBIOS
-                </button>
+                {/* EL BOTÓN DE GUARDAR SE ELIMINÓ DE ACÁ PORQUE NO TIENE ACCESO A LOS DATOS */}
 
                 <button className={styles.logoutBtn} onClick={onLogout}>
                     <LogOut size={16} /> Logout
@@ -75,8 +56,6 @@ export default function Dashboard({ onLogout }) {
             </aside>
 
             <main className={styles.main}>
-                {/* GLOBAL HEADER REMOVED - MOVED TO SIDEBAR */}
-
                 {activeTab === 'projects' && <TabProjects />}
                 {activeTab === 'content' && <TabContent />}
                 {activeTab === 'inbox' && <TabInbox />}

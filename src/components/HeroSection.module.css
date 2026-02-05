@@ -3,11 +3,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    /* Centered */
     text-align: center;
-    /* Centered text */
     padding: 6rem 2rem;
-    /* Symmetric padding */
     position: relative;
     z-index: 10;
     background-color: transparent !important;
@@ -18,7 +15,6 @@
     max-width: 900px;
     width: 100%;
     margin: 0 auto;
-    /* Ensure content block is centered */
 }
 
 .name {
@@ -41,7 +37,6 @@
     gap: 0.75rem;
     flex-wrap: wrap;
     justify-content: center;
-    /* Center flex items */
 }
 
 .brandName {
@@ -63,19 +58,31 @@
     opacity: 0.9;
 }
 
+/* --- AQUÍ ESTÁ LA CORRECCIÓN DE LA CAJA --- */
 .valuePropBox {
     background: rgba(255, 255, 255, 0.03);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(255, 255, 255, 0.1);
+
     padding: 0.8rem 1.2rem;
-    /* Reduced padding ~50% */
     border-radius: 12px;
-    max-width: 400px;
+
+    /* CAMBIOS PARA QUE CREZCA CON EL TEXTO: */
+    display: inline-block;
+    /* Ocupa solo el espacio del texto */
+    vertical-align: middle;
+
+    max-width: 600px;
+    /* Límite máximo */
+    min-width: 40px;
+    /* Para que no desaparezca al borrar todo */
+    min-height: 50px;
+    /* Altura fija para evitar saltos verticales */
+
     margin-top: 2rem;
     margin-bottom: 3rem;
-    margin-left: auto;
-    margin-right: auto;
+    /* Al ser inline-block, se centra solo con el text-align: center del padre (.hero) */
 }
 
 .valuePropBox p {
@@ -83,14 +90,17 @@
     line-height: 1.6;
     color: rgba(255, 255, 255, 0.9);
     font-weight: 400;
-    display: inline-block;
+    display: inline;
+    /* Importante para fluidez */
+    margin: 0;
 }
 
 .cursor {
     display: inline-block;
     width: 2px;
     height: 1.2em;
-    background-color: var(--color-accent);
+    background-color: var(--color-accent, #00f5d4);
+    /* Fallback a cyan si falta la variable */
     margin-left: 4px;
     vertical-align: text-bottom;
     animation: blink 1s step-end infinite;
@@ -112,11 +122,10 @@
     display: flex;
     gap: 1rem;
     justify-content: center;
-    /* Center buttons */
 }
 
 .primaryBtn {
-    background: var(--color-accent);
+    background: var(--color-accent, #00f5d4);
     color: #0b0f19;
     padding: 0.8rem 2rem;
     border-radius: 50px;
@@ -125,6 +134,7 @@
     font-size: 0.9rem;
     letter-spacing: 0.05em;
     transition: all 0.2s;
+    text-decoration: none;
 }
 
 .primaryBtn:hover {
@@ -144,6 +154,7 @@
     font-size: 0.9rem;
     letter-spacing: 0.05em;
     transition: all 0.2s;
+    text-decoration: none;
 }
 
 .secondaryBtn:hover {

@@ -1,20 +1,19 @@
 import { initializeApp, getApps } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
+// import { getStorage } from "firebase/storage"; // Ya no usamos Storage, usamos Vercel Blob
 
 const firebaseConfig = {
-    apiKey: "AIzaSyCXocCCKsliGZFPO_B3hVsZYSRL0Vu3v18",
-    authDomain: "rdz-studio.firebaseapp.com",
-    projectId: "rdz-studio",
-    storageBucket: "rdz-studio.firebasestorage.app",
-    messagingSenderId: "407568499977",
-    appId: "1:407568499977:web:bb5997129611ec053fffd8",
-    measurementId: "G-XNJPQ21XT2"
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
 // Initialize Firebase
 const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApps()[0];
-
-// Initialize Firestore
 const db = getFirestore(app);
+// const storage = getStorage(app);
 
 export { db };

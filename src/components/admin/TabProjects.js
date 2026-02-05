@@ -1,66 +1,78 @@
 "use client";
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from './Admin.module.css';
 import { Plus, Trash2 } from 'lucide-react';
 import ProjectEditor from './ProjectEditor';
 import { useProjectContext } from '@/context/ProjectContext';
 
 export default function TabProjects() {
-    const { projects, updateProjects } = useProjectContext();
+    // 1. Importamos la función MAESTRA saveAllChanges
+    const { projects, saveAllChanges, deleteProject } = useProjectContext();
     const [editingProject, setEditingProject] = useState(null);
 
-    // No loadProject() needed, context handles it.
+    // 2. Esta función recibe los datos DEL EDITOR y los manda a la NUBE
+    const handleSaveProject = async (projectData, imageFile) => {
+        // Llamamos a la función que guarda en Firebase + Vercel
+        const success = await saveAllChanges(projectData, imageFile);
 
-    const handleSaveProject = (savedProject) => {
-        // Check if update or new
-        const exists = projects.find(p => p.id === savedProject.id);
-        let newProjects;
-        if (exists) {
-            newProjects = projects.map(p => p.id === savedProject.id ? savedProject : p);
-        } else {
-            newProjects = [...projects, savedProject];
+        // Solo cerramos el editor si el guardado fue exitoso
+        if (success) {
+            setEditingProject(null);
         }
-        updateProjects(newProjects);
-        setEditingProject(null);
     };
 
-    const handleDelete = (e, id) => {
+    const handleDelete = async (e, id) => {
         e.stopPropagation();
-        if (!confirm('Are you sure you want to delete this project?')) return;
+        if (!confirm('¿Estás seguro de que querés borrar este proyecto?')) return;
 
-        const newProjects = projects.filter(p => p.id !== id);
-        updateProjects(newProjects);
+        // Si tenés implementada la función borrar en el contexto, la usamos
+        if (deleteProject) {
+            await deleteProject(id);
+        } else {
+            alert("La función de borrar aún no está conectada a Firebase.");
+        }
     };
 
+    // Si estamos editando, mostramos el Editor
     if (editingProject) {
         return (
             <ProjectEditor
                 project={editingProject === 'new' ? null : editingProject}
                 onCancel={() => setEditingProject(null)}
-                onSave={handleSaveProject}
+                onSave={handleSaveProject} // Pasamos la función nueva
             />
         );
     }
 
+    // Si no, mostramos la lista (Grilla)
     return (
         <div>
             <div className={styles.header}>
-                <h1>Projects</h1>
+                <h1>Proyectos</h1>
                 <button className={styles.addBtn} onClick={() => setEditingProject('new')}>
-                    <Plus size={18} /> Add New Project
+                    <Plus size={18} /> Nuevo Proyecto
                 </button>
             </div>
 
             <div className={styles.grid}>
                 {projects.map(p => (
                     <div key={p.id} className={styles.projectCard} onClick={() => setEditingProject(p)}>
-                        <img src={p.cover} alt={p.title} />
+                        {/* Mostramos la imagen si existe, sino un cuadro gris */}
+                        {p.image ? (
+                            <img src={p.image} alt={p.title} />
+                        ) : (
+                            <div style={{ width: '100%', height: '150px', background: '#333', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#666' }}>
+                                Sin Imagen
+                            </div>
+                        )}
+
                         <button className={styles.deleteBtn} onClick={(e) => handleDelete(e, p.id)}>
                             <Trash2 size={16} />
                         </button>
+
                         <div className={styles.pInfo}>
-                            <h4>{p.title}</h4>
-                            <p>{p.category}</p>
+                            <h4>{p.title || "Sin Título"}</h4>
+                            <p>{p.category || "Sin Categoría"}</p>
                         </div>
                     </div>
                 ))}

@@ -1,23 +1,32 @@
-import { put } from '@vercel/blob';
+import { handleUpload } from '@vercel/blob/client';
 import { NextResponse } from 'next/server';
 
 export async function POST(request) {
-    const { searchParams } = new URL(request.url);
-    const filename = searchParams.get('filename') || 'file-' + Date.now();
-
-    // ⚠️ The request body is the file stream
-    if (!request.body) {
-        return NextResponse.json({ error: 'No body provided' }, { status: 400 });
-    }
+    const body = await request.json();
 
     try {
-        const blob = await put(filename, request.body, {
-            access: 'public',
+        const jsonResponse = await handleUpload({
+            body,
+            request,
+            onBeforeGenerateToken: async (pathname) => {
+                // AQUÍ es donde el servidor autoriza la subida y define las reglas
+                return {
+                    allowedContentTypes: ['image/jpeg', 'image/png', 'image/gif', 'video/mp4', 'application/pdf'],
+                    tokenPayload: JSON.stringify({}),
+                    // ESTA LÍNEA ES CLAVE: El servidor agrega un sufijo random para que no haya duplicados
+                    addRandomSuffix: true,
+                };
+            },
+            onUploadCompleted: async ({ blob, tokenPayload }) => {
+                console.log('Subida completada en Vercel:', blob.url);
+            },
         });
 
-        return NextResponse.json(blob);
+        return NextResponse.json(jsonResponse);
     } catch (error) {
-        console.error('Upload Error:', error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        return NextResponse.json(
+            { error: error.message },
+            { status: 400 },
+        );
     }
 }

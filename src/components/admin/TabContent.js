@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import styles from './Admin.module.css';
 import { useProjectContext } from '@/context/ProjectContext';
-import { Upload } from 'lucide-react';
+import { Upload, Info } from 'lucide-react';
 import { convertFileToBase64 } from '@/utils/helpers';
 
 export default function TabContent() {
@@ -13,7 +13,7 @@ export default function TabContent() {
     const [contact, setContact] = useState(siteContent?.contact || { email: 'hello@rdzstudio.com' });
     const [identity, setIdentity] = useState(siteContent?.identity || { logo: '' });
 
-    // Sync with context on load
+    // Sincronizar estado cuando cargan los datos de Firebase
     useEffect(() => {
         if (siteContent) {
             setHero(siteContent.hero || {});
@@ -23,16 +23,20 @@ export default function TabContent() {
         }
     }, [siteContent]);
 
-    const handleSave = () => {
-        updateSiteContent({
-            hero,
-            about,
-            contact,
-            identity
-        });
-        alert('Global Content Saved! Remember to click "GUARDAR CAMBIOS" in the main dashboard to persist to disk.');
+    const handleSave = async () => {
+        try {
+            await Promise.all([
+                updateSiteContent('hero', hero),
+                updateSiteContent('about', about),
+                updateSiteContent('contact', contact),
+                updateSiteContent('identity', identity)
+            ]);
+            console.log("Todo guardado correctamente");
+        } catch (error) {
+            console.error("Error guardando:", error);
+            alert("Hubo un error al guardar.");
+        }
     };
-
 
     const handleLogoUpload = async (e) => {
         const file = e.target.files[0];
@@ -46,7 +50,7 @@ export default function TabContent() {
         }
     };
 
-    // Cropper State
+    // Crop Logic
     const [cropImage, setCropImage] = useState(null);
     const [zoom, setZoom] = useState(1);
     const [cropPos, setCropPos] = useState({ x: 0, y: 0 });
@@ -89,44 +93,12 @@ export default function TabContent() {
         canvas.width = targetWidth;
         canvas.height = targetHeight;
 
-        // Clear canvas
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         const img = imgRef.current;
         if (!img) return;
 
-        // Math: Map the visual preview to the canvas.
-        // Preview Container: 300x375
-        // Scale Factor: targetWidth / 300 = 2.
         const scaleFactor = targetWidth / 300;
-
-        // In the preview, use Flexbox Center.
-        // The image natural dimensions are scaled by 'zoom'.
-        // So visually: width = naturalWidth * zoom.
-        // Visual Position (relative to container center) is just (cropPos.x, cropPos.y).
-
-        // Canvas Drawing:
-        // We need to place it on the canvas similarly.
-        // Canvas Center: (targetWidth/2, targetHeight/2)
-        // Image Drawn Width: img.naturalWidth * zoom * scaleFactor? 
-        // Wait, 'zoom' in preview applies to natural pixels? No, 'scale(zoom)' applies to "element".
-        // The element is 'img'. Without explicit width/height, it is natural size.
-        // So yes, drawn width = naturalWidth * zoom.
-
-        // However, we want to match the "screen pixels" to "canvas pixels".
-        // Screen pixels * ScaleFactor = Canvas Pixels.
-        // Screen Width of object = naturalWidth * zoom.
-        // Canvas Width of object = (naturalWidth * zoom) * scaleFactor.
-
-        // Position:
-        // Screen Center X = 150. Canvas Center X = 300.
-        // Object Center Screen X = 150 + cropPos.x.
-        // Object Center Canvas X = 300 + (cropPos.x * scaleFactor).
-
-        // Top-Left Corner Calculation:
-        // Object Width = naturalWidth * zoom * scaleFactor.
-        // Corner X = Center X - (Object Width / 2).
-
         const finalZoom = zoom * scaleFactor;
         const scaledW = img.naturalWidth * finalZoom;
         const scaledH = img.naturalHeight * finalZoom;
@@ -154,6 +126,7 @@ export default function TabContent() {
             <div className={styles.sectionBlock}>
                 <div className={styles.sectionTitle}>Identity & Home</div>
 
+                {/* LOGO (SE MANTIENE) */}
                 <div className={styles.field}>
                     <label className={styles.label}>Logo</label>
                     <div className={styles.dropzone} onClick={() => document.getElementById('logoUpload').click()}>
@@ -164,19 +137,17 @@ export default function TabContent() {
                     {identity.logo && <img src={identity.logo} alt="Logo Preview" style={{ marginTop: '1rem', maxHeight: '50px', objectFit: 'contain' }} />}
                 </div>
 
-                <div className={styles.field}>
-                    <label className={styles.label}>Home Value Prop (Typewriter Text)</label>
-                    <textarea
-                        className={styles.textarea}
-                        rows={3}
-                        value={hero.subtitle || ''}
-                        placeholder="Especialista en identidad..."
-                        onChange={e => setHero({ ...hero, subtitle: e.target.value })}
-                    />
+                {/* CAMBIO: ELIMINADO EL TEXTAREA DE HOME VALUE PROP */}
+                {/* Agregamos una nota informativa en su lugar */}
+                <div className={styles.field} style={{ background: 'rgba(255, 255, 255, 0.05)', padding: '10px', borderRadius: '6px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#888', fontSize: '0.9rem' }}>
+                        <Info size={16} />
+                        <span>El texto de portada se gestiona desde el código (Animación Typewriter).</span>
+                    </div>
                 </div>
             </div>
 
-            {/* ABOUT SECTION */}
+            {/* ABOUT SECTION (SE MANTIENE INTACTO) */}
             <div className={styles.sectionBlock}>
                 <div className={styles.sectionTitle}>About Section</div>
                 <div className={styles.field}>
@@ -200,7 +171,7 @@ export default function TabContent() {
                 </div>
             </div>
 
-            {/* CROPPER MODAL */}
+            {/* CROPPER MODAL (SE MANTIENE INTACTO) */}
             {cropImage && (
                 <div style={{
                     position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
@@ -212,17 +183,11 @@ export default function TabContent() {
 
                         <div
                             style={{
-                                width: '300px', height: '375px', // 4:5 Aspect Ratio
+                                width: '300px', height: '375px',
                                 border: '2px solid cyan', overflow: 'hidden', position: 'relative',
                                 cursor: 'grab',
-                                display: 'flex', alignItems: 'center', justifyContent: 'center', // Center content
-                                // Checkerboard pattern for transparency
-                                backgroundImage: `
-                                    linear-gradient(45deg, #222 25%, transparent 25%), 
-                                    linear-gradient(-45deg, #222 25%, transparent 25%), 
-                                    linear-gradient(45deg, transparent 75%, #222 75%), 
-                                    linear-gradient(-45deg, transparent 75%, #222 75%)
-                                `,
+                                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                backgroundImage: `linear-gradient(45deg, #222 25%, transparent 25%), linear-gradient(-45deg, #222 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #222 75%), linear-gradient(-45deg, transparent 75%, #222 75%)`,
                                 backgroundSize: '20px 20px',
                                 backgroundPosition: '0 0, 0 10px, 10px -10px, -10px 0px',
                                 backgroundColor: '#111'
@@ -238,14 +203,10 @@ export default function TabContent() {
                                 alt="Crop"
                                 style={{
                                     transform: `translate(${cropPos.x}px, ${cropPos.y}px) scale(${zoom})`,
-                                    // Removed transformOrigin top-left to allow centering
                                     userSelect: 'none',
                                     pointerEvents: 'none',
                                     maxWidth: 'none',
                                     maxHeight: 'none'
-                                }}
-                                onLoad={(e) => {
-                                    // Logic to maybe auto-fit could go here, but keeping simple for now
                                 }}
                             />
                         </div>
@@ -268,7 +229,7 @@ export default function TabContent() {
                 </div>
             )}
 
-            {/* CONTACT INFO */}
+            {/* CONTACT INFO (SE MANTIENE INTACTO) */}
             <div className={styles.sectionBlock}>
                 <div className={styles.sectionTitle}>Contact Info</div>
                 <div className={styles.field}>
