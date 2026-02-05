@@ -1,33 +1,10 @@
 "use client";
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import styles from './HeroSection.module.css';
 
 export default function HeroSection() {
-    // REFERENCIA AL VIDEO (Para control total)
-    const videoRef = useRef(null);
-
-    useEffect(() => {
-        const videoElement = videoRef.current;
-        if (videoElement) {
-            // LÓGICA BLINDADA PARA MÓVIL
-            videoElement.muted = true; // Forzamos silencio
-            videoElement.playsInline = true; // Forzamos reproducción en línea
-
-            const playVideo = async () => {
-                try {
-                    await videoElement.play();
-                } catch (err) {
-                    console.log("Autoplay bloqueado, intentando silenciar nuevamente:", err);
-                    videoElement.muted = true;
-                    videoElement.play().catch(e => console.error("No se pudo reproducir:", e));
-                }
-            };
-            playVideo();
-        }
-    }, []);
-
-    // --- LÓGICA DE TEXTO TYPEWRITER ---
+    // --- LÓGICA DE TEXTO TYPEWRITER (Tu código de siempre) ---
     const phrases = [
         "Especialista en Identidad Visual, Social Media y Video.",
         "Potenciate a través del arte digital."
@@ -41,15 +18,12 @@ export default function HeroSection() {
     useEffect(() => {
         const i = loopNum % phrases.length;
         const fullText = phrases[i];
-
         const handleType = () => {
             setText(isDeleting
                 ? fullText.substring(0, text.length - 1)
                 : fullText.substring(0, text.length + 1)
             );
-
             let speed = isDeleting ? 40 : 80;
-
             if (!isDeleting && text === fullText) {
                 speed = 2000;
                 setIsDeleting(true);
@@ -60,7 +34,6 @@ export default function HeroSection() {
             }
             setTypingSpeed(speed);
         };
-
         const timer = setTimeout(handleType, typingSpeed);
         return () => clearTimeout(timer);
     }, [text, isDeleting, loopNum, typingSpeed, phrases]);
@@ -68,19 +41,30 @@ export default function HeroSection() {
     return (
         <section className={styles.hero} id="home">
 
-            {/* CONTENEDOR DEL VIDEO FIXED */}
-            <div className={styles.videoContainer}>
+            {/* CONTENEDOR DEL FONDO (FIXED) */}
+            <div className={styles.backgroundContainer}>
+
+                {/* 1. VIDEO (Solo visible en PC) */}
                 <video
-                    ref={videoRef}
                     autoPlay
                     loop
                     muted
                     playsInline
-                    className={styles.videoBackground}
-                    poster="/video-poster.jpg" // Imagen de respaldo obligatoria
+                    className={styles.pcVideo}
                 >
                     <source src="/video-hero.mp4" type="video/mp4" />
                 </video>
+
+                {/* 2. IMAGEN (Solo visible en MÓVIL) */}
+                {/* Asegurate de tener 'video-poster.jpg' en la carpeta public */}
+                <img
+                    src="/video-poster.jpg"
+                    alt="Fondo estático"
+                    className={styles.mobileImage}
+                />
+
+                {/* Capa oscura opcional para que se lea el texto */}
+                <div className={styles.overlay}></div>
             </div>
 
             <div className={styles.content}>

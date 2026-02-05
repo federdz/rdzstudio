@@ -5,36 +5,65 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
     background: transparent;
-    /* CLAVE: Fondo transparente */
 }
 
-/* CONTENEDOR FIJO (Para que se vea en "Sobre Mí") */
-.videoContainer {
+/* --- CONTENEDOR FIJO DEL FONDO --- */
+.backgroundContainer {
     position: fixed;
+    /* Se queda pegado a la pantalla */
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
     z-index: -1;
-    /* Al fondo de todo */
+    /* Al fondo */
     overflow: hidden;
-
-    /* TRUCOS ANTI-PARPADEO (Hardware Acceleration) */
-    -webkit-transform: translateZ(0);
-    transform: translateZ(0);
-    will-change: transform;
 }
 
-.videoBackground {
+/* ESTILOS VIDEO PC */
+.pcVideo {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    pointer-events: none;
+    display: block;
+    /* Visible por defecto */
 }
 
-/* CONTENIDO (Igual que antes) */
+/* ESTILOS IMAGEN MOVIL */
+.mobileImage {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: none;
+    /* Oculta por defecto (se activa en móvil) */
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    /* Un tinte suave para leer mejor */
+}
+
+/* --- MEDIA QUERY: Lógica para Celulares/Tablets --- */
+@media (max-width: 768px) {
+    .pcVideo {
+        display: none;
+        /* OCULTA EL VIDEO EN MÓVIL */
+    }
+
+    .mobileImage {
+        display: block;
+        /* MUESTRA LA IMAGEN EN MÓVIL */
+    }
+}
+
+
+/* --- ESTILOS DE CONTENIDO (Iguales que siempre) --- */
 .content {
     position: relative;
     z-index: 2;
@@ -159,7 +188,6 @@
     color: #000;
 }
 
-/* RESPONSIVE */
 @media (max-width: 768px) {
     .name {
         font-size: 1rem;
