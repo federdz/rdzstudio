@@ -3,78 +3,69 @@
     top: 0;
     left: 0;
     width: 100%;
-    z-index: 100;
-
-    /* CAMBIO CLAVE: Altura fija y menor padding vertical */
-    height: 80px;
-    /* Altura controlada */
+    /* ALTURA FINA: Aquí controlamos que no ocupe tanto espacio */
+    height: 60px;
     padding: 0 5%;
-    /* 0 arriba/abajo, 5% a los lados */
+    /* Espaciado lateral */
 
     display: flex;
     align-items: center;
-    /* Esto centra verticalmente el logo y el menú */
     justify-content: space-between;
+    z-index: 100;
 
-    /* Efecto vidrio */
-    background: rgba(0, 0, 0, 0.1);
-    /* Fondo muy sutil */
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    /* Fondo transparente para permitir que el efecto negativo interactúe con el video/secciones */
+    background: transparent;
     transition: all 0.3s ease;
 }
 
-/* LOGO */
+/* --- EFECTO NEGATIVO (La magia) --- */
+/* Aplicamos esto al Logo, Links y Botón de menú para que inviertan su color según el fondo */
+.logo,
+.navLink,
+.mobileMenuBtn {
+    color: #fff;
+    /* Color base blanco */
+    mix-blend-mode: difference;
+    /* Se vuelve negro sobre fondos claros */
+}
+
+/* ESTILOS DEL LOGO */
 .logo {
-    display: flex;
-    align-items: center;
-    /* CAMBIO CLAVE: Permitimos que ocupe el ancho que necesite, 
-       pero limitamos la altura para que no empuje el header */
-    height: 100%;
-    max-height: 50px;
-    /* El logo no pasará de 50px de alto */
-    width: auto;
-    /* El ancho se ajusta solo para no deformarse */
-}
-
-/* Si tu logo es una imagen directa */
-.logo img {
-    height: 100%;
-    width: auto;
-    object-fit: contain;
-}
-
-/* Si tu logo es texto (#RDZ) */
-.logoText {
     font-family: 'Trap', sans-serif;
     font-weight: 800;
     font-size: 1.5rem;
-    color: #00FFFF;
+    /* Tamaño del texto del logo */
     text-decoration: none;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    height: 100%;
 }
 
 /* NAVEGACIÓN (Desktop) */
 .nav {
     display: flex;
-    gap: 30px;
+    gap: 40px;
+    /* Separación entre links */
+    height: 100%;
+    align-items: center;
 }
 
 .navLink {
     font-family: 'Trap', sans-serif;
     text-decoration: none;
-    color: #fff;
-    /* Blanco puro para contraste */
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    /* Texto fino y elegante */
+    font-weight: 600;
     letter-spacing: 1px;
     text-transform: uppercase;
-    transition: color 0.3s ease;
-    padding: 10px 0;
-    /* Área de click */
+    cursor: pointer;
+    transition: opacity 0.3s ease;
 }
 
 .navLink:hover {
-    color: #00FFFF;
+    opacity: 0.6;
+    /* Efecto sutil al pasar el mouse */
 }
 
 /* MENÚ HAMBURGUESA (Móvil) */
@@ -82,25 +73,26 @@
     display: none;
     background: none;
     border: none;
-    color: white;
     font-size: 1.5rem;
     cursor: pointer;
+    padding: 0;
 }
 
 /* RESPONSIVE */
 @media (max-width: 768px) {
     .header {
-        height: 70px;
-        /* Aún más compacto en móvil */
+        height: 50px;
+        /* Aún más fino en celulares */
         padding: 0 20px;
     }
 
     .nav {
         display: none;
-        /* Aquí iría tu lógica de menú móvil si la tenés aparte */
+        /* Oculta menú de escritorio */
     }
 
     .mobileMenuBtn {
         display: block;
+        /* Muestra hamburguesa */
     }
 }
