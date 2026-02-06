@@ -42,7 +42,7 @@ export default function ContactFooter() {
     };
 
     // Definimos el mail aquí para usarlo en el enlace
-    const contactEmail = "federicorodriguezlarocca@gmail.com";
+    const contactEmail = "fede@rdzstudio.art";
 
     return (
         <section className={styles.section} id="contact">
